@@ -395,8 +395,13 @@ class Articles extends Controller
     public function deleteArticle(string|int $id)
     {
         try {
-            Article::findOrFail($id)
-                ->delete();
+            $artilce = Article::findOrFail($id);
+
+            //? delete respective image
+            File::delete(public_path($artilce->image));
+
+            //? delete article
+            $artilce->delete();
 
             return response()->json([
                 'status' => 'success',

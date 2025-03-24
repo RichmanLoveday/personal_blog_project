@@ -251,10 +251,17 @@ class Articles extends Controller
     public function deleteArticle(string|int $id)
     {
         try {
-            Article::where('id', $id)
+            $artilce = Article::where('id', $id)
                 ->where('user_id', Auth::user()->id)
                 ->where('status', 'active')
-                ->delete();
+                ->first();
+
+
+            //? delete respective image
+            File::delete(public_path($artilce->image));
+
+            //? delete article
+            $artilce->delete();
 
             return response()->json([
                 'status' => 'success',
