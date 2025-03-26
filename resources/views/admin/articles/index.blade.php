@@ -8,7 +8,8 @@
             </div>
             <div class="page-btn">
                 <a href="{{ route('admin.article.create') }}" class="btn btn-added"><img
-                        src="{{ asset('admin/assets/img/icons/plus.svg') }}" alt="img" class="me-1">Add New Article</a>
+                        src="{{ asset('admin/assets/img/icons/plus.svg') }}" alt="img" class="me-1">Add New Article
+                </a>
             </div>
         </div>
 
@@ -16,44 +17,105 @@
             <div class="card-body">
                 <div class="car" id="">
                     <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose Start Date">
+                        <form action="{{ route('admin.article.filter') }}" method="get">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <input id="startDate" oninput="determinEndDate(this)" type="text"
+                                            value="{{ old('startDate', request('startDate')) }}" name="startDate"
+                                            class="datetimepicker cal-icon" placeholder="Choose Start Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <input id="endDate" type="text" @disabled(!request('endDate'))
+                                            value="{{ old('endDate', request('endDate')) }}" name="endDate"
+                                            class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="category">
+                                            <option value="">Choose Category</option>
+                                            @isset($categories)
+                                                @foreach ($categories as $category)
+                                                    <option @selected(old('category', request('category')) == $category->id) value="{{ $category->id }}">
+                                                        {{ $category->name }}</option>
+                                                @endforeach
+                                            @endisset
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="slider">
+                                            <option value="">Choose Slider</option>
+                                            <option @selected(old('slider', request('slider')) == '0' ? true : false) value="0">Inactive</option>
+                                            <option @selected(old('slider', request('slider')) == '1' ? true : false) value="1">Active</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="banner_right_top">
+                                            <option value="">Choose Banner Right Top</option>
+                                            <option @selected(old('banner_right_top', request('banner_right_top')) == '0' ? true : false) value="0">Inactive</option>
+                                            <option @selected(old('banner_right_top', request('banner_right_top')) == '1' ? true : false) value="1">Active</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="banner_right_bottom">
+                                            <option value="">Choose Banner Right Bottom</option>
+                                            <option @selected(old('banner_right_bottom', request('banner_right_bottom')) == '0' ? true : false) value="0">Inactive</option>
+                                            <option @selected(old('banner_right_bottom', request('banner_right_bottom')) == '1' ? true : false) value="1">Active</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="news_type">
+                                            <option value="">Choose News Type</option>
+                                            <option @selected(old('news_type', request('news_type')) == 'is_trending' ? true : false) value="is_trending">Trending News</option>
+                                            <option @selected(old('news_type', request('news_type')) == 'is_featured' ? true : false) value="is_featured">Featured News</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="status">
+                                            <option value="">Choose Status</option>
+                                            <option @selected(old('status', request('status')) == 'in-active' ? true : false) value="in-active">Inactive</option>
+                                            <option @selected(old('status', request('status')) == 'active' ? true : false) value="active">Active</option>
+                                        </select>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6 col-md-3 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="publish">
+                                            <option value="">Choose Publish Type</option>
+                                            <option @selected(old('publish', request('publish')) == 'draft' ? true : false) value="draft">Unpublish</option>
+                                            <option @selected(old('publish', request('publish')) == 'pubished' ? true : false) value="pubished">Published</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div
+                                    class="col-sm-12 col-md-9 col-12 d-sm-flex justify-content-sm-center justify-content-md-end">
+                                    <div class="form-group text-sm-center">
+                                        <button type="submit" class="btn btn-filters ms-auto"><img
+                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
+                                                alt="img"></button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Banner</option>
-                                        <option>Banner</option>
-                                        <option>Banner Right Top</option>
-                                        <option>Banner Right Bottom</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose News Type</option>
-                                        <option>Trending News</option>
-                                        <option>Featured News</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -106,7 +168,8 @@
                                                     onchange="updateSlider(this, '{{ $article->id }}')" type="checkbox"
                                                     id="is_slider_{{ $article->id }}" class="check"
                                                     @checked((int) $article->is_slider ? true : false)>
-                                                <label for="is_slider_{{ $article->id }}" class="checktoggle">checkbox</label>
+                                                <label for="is_slider_{{ $article->id }}"
+                                                    class="checktoggle">checkbox</label>
                                             </div>
                                         </td>
 
@@ -114,8 +177,8 @@
                                             <div class="status-toggle d-flex justify-content-center align-items-center">
                                                 <input value="{{ $article->is_banner_right_top ? 0 : 1 }}"
                                                     onchange="updateBannerTop(this, '{{ $article->id }}', 'is_slider', 'admin')"
-                                                    type="checkbox" id="is_banner_right_top_{{ $article->id }}" class="check"
-                                                    @checked($article->is_banner_right_top ? 1 : 0)>
+                                                    type="checkbox" id="is_banner_right_top_{{ $article->id }}"
+                                                    class="check" @checked($article->is_banner_right_top ? 1 : 0)>
                                                 <label for="is_banner_right_top_{{ $article->id }}"
                                                     class="checktoggle">checkbox</label>
                                             </div>
@@ -260,6 +323,14 @@
             <script>
                 $(document).ready(function() {
                     toastr.success("{{ session('status') }}");
+                });
+            </script>
+        @endif
+
+        @if (session('error'))
+            <script>
+                $(document).ready(function() {
+                    toastr.error("{{ session('error') }}");
                 });
             </script>
         @endif

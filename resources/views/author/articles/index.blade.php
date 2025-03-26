@@ -16,35 +16,63 @@
             <div class="card-body">
                 <div class="car" id="">
                     <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose Start Date">
+                        <form action="{{ route('author.article.filter') }}" method="get">
+                            <div class="row">
+                                <div class="col-sm-6 col-md-4 col-12">
+                                    <div class="form-group">
+                                        <input id="startDate" oninput="determinEndDate(this)" type="text"
+                                            value="{{ old('startDate', request('startDate')) }}" name="startDate"
+                                            class="datetimepicker cal-icon" placeholder="Choose Start Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                <div class="col-sm-6 col-md-4 col-12">
+                                    <div class="form-group">
+                                        <input id="endDate" type="text" @disabled(!request('endDate'))
+                                            value="{{ old('endDate', request('endDate')) }}" name="endDate"
+                                            class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="news_type">
+                                            <option value="">Choose News Type</option>
+                                            <option @selected(old('news_type', request('news_type')) == 'is_trending' ? true : false) value="is_trending">Trending News</option>
+                                            <option @selected(old('news_type', request('news_type')) == 'is_featured' ? true : false) value="is_featured">Featured News</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="category">
+                                            <option value="">Choose Category</option>
+                                            @isset($categories)
+                                                @foreach ($categories as $category)
+                                                    <option @selected(old('category', request('category')) == $category->id) value="{{ $category->id }}">
+                                                        {{ $category->name }}</option>
+                                                @endforeach
+                                            @endisset
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6 col-md-4 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="publish">
+                                            <option value="">Choose Publish Type</option>
+                                            <option @selected(old('publish', request('publish')) == 'draft' ? true : false) value="draft">Unpublish</option>
+                                            <option @selected(old('publish', request('publish')) == 'pubished' ? true : false) value="pubished">Published</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-md-4 col-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-filters ms-auto"><img
+                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
+                                                alt="img"></button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose News Type</option>
-                                        <option>Trending News</option>
-                                        <option>Featured News</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img
-                                            src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -150,6 +178,21 @@
                                 @endforeach
                             @endisset
                         </tbody>
+
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Photo</th>
+                                <th>Category</th>
+                                <th>Tags</th>
+                                <th>Trending News</th>
+                                <th>Featured News</th>
+                                <th>Published Date</th>
+                                <th>Date Added</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>

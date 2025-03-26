@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreTagRequest;
 use App\Http\Requests\TagRequestUpdate;
+use App\Models\ArticleTag;
 use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -83,6 +84,26 @@ class TagsController extends Controller
             ], 500);
         }
     }
+
+    public function deleteArticleTag(string|int $tagId, string|int $articleId)
+    {
+        try {
+            ArticleTag::where('tag_id', $tagId)
+                ->where('article_id', $articleId)
+                ->delete();
+
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Tag removed successfully',
+            ], 200);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 500);
+        }
+    }
+
 
     public function updateTagStatus(Request $request)
     {

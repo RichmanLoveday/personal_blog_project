@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -248,6 +249,57 @@ class Articles extends Controller
     }
 
 
+    public function articleFilter(Request $request)
+    {
+        try {
+            $query = Article::with(['tags', 'category', 'user'])
+                ->where('user_id', Auth::user()->id)
+                ->where('status', 'active');
+
+            //? Check if a start date is provided
+            if ($request->filled('startDate')) {
+                $startDate = Carbon::createFromFormat('d-m-Y', $request->startDate)->startOfDay();
+                $query->where('created_at', '>=', $startDate);
+            }
+
+            //? Check if an end date is provided
+            if ($request->filled('endDate')) {
+                $endDate = Carbon::createFromFormat('d-m-Y', $request->endDate)->endOfDay();
+                $query->where('created_at', '<=', $endDate);
+            }
+
+            //? Check if category is provided
+            if ($request->filled('category')) {
+                $query->where('category_id', (int) $request->category);
+            }
+
+            //? Check if news type is provided
+            if ($request->filled('news_type')) {
+                $query->where($request->news_type, 1);
+            }
+
+            //? Check if publish is provided
+            if ($request->filled('publish')) {
+                if ($request->publish == 'draft') {
+                    $query->whereNull('published_at');
+                } else {
+                    $query->whereNotNull('published_at');
+                }
+            }
+
+            //? Get articles (latest first, max 20 unless a date filter is applied)
+            $articles = $query->latest()->paginate(10)->withQueryString();
+            $categories = Category::latest()->get();
+
+            // dd($articles);
+
+            return view('author.articles.index', compact('articles', 'categories'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Invalid parameter formats: ' . $e->getMessage());
+        }
+    }
+
+
     public function deleteArticle(string|int $id)
     {
         try {
@@ -255,7 +307,6 @@ class Articles extends Controller
                 ->where('user_id', Auth::user()->id)
                 ->where('status', 'active')
                 ->first();
-
 
             //? delete respective image
             File::delete(public_path($artilce->image));

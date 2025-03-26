@@ -1,6 +1,6 @@
 //? get CSRF token
 const csrfToken = $('meta[name="csrf-token"]').attr("content");
-console.log(csrfToken);
+// console.log(csrfToken);
 //? Function to Update Category Status
 const updateAuthorStatus = async (event, id, status) => {
 

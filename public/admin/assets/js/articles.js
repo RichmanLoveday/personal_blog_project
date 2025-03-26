@@ -308,7 +308,7 @@ function updateNewsType(ele, id, newsType, role) {
 }
 
 function deleteTag(ele, id, articleId, role) {
-    const url = role == 'author' ? `${BASE_URL}/author/tag/delete/${id}/${articleId}` : `${BASE_URL}/admin/tag/delete/${id}/${articleId}`;
+    const url = role == 'author' ? `${BASE_URL}/author/tag/delete/${id}/${articleId}` : `${BASE_URL}/admin/article/tag/delete/${id}/${articleId}`;
 
     $.ajax({
         url: url,
@@ -572,5 +572,30 @@ function previewImage(ele) {
     };
     reader.readAsDataURL($(ele)[0].files[0]);
 }
+
+
+
+$(document).ready(function () {
+    // Initialize datetimepickers
+    $('#startDate').datetimepicker({
+        format: 'DD-MM-YYYY',
+        useCurrent: false, // Important to prevent auto-selecting current date
+        ignoreReadonly: true,
+    });
+
+    $('#endDate').datetimepicker({
+        format: 'DD-MM-YYYY',
+        useCurrent: false,
+        ignoreReadonly: true,
+    });
+
+    //? When start date is selected, update end date's minDate
+    $("#startDate").on("dp.change", function (e) {
+        $('#endDate')
+            .prop('disabled', false)
+            .val("")
+            .data("DateTimePicker").minDate(e.date);
+    });
+});
 
 

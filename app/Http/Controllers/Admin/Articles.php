@@ -9,6 +9,7 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use Illuminate\Http\Request;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
@@ -23,9 +24,11 @@ class Articles extends Controller
             ->paginate(10)
             ->withQueryString();
 
-        // dd($articles);
+        $categories = Category::latest()->get();
 
-        return view('admin.articles.index', compact('articles'));
+        //  dd($articles);
+
+        return view('admin.articles.index', compact('articles', 'categories'));
     }
 
     public function addArticle()
@@ -327,7 +330,7 @@ class Articles extends Controller
             ->where('id', $id)
             ->first();
 
-        $categories = Category::where('status', 'active')->get();
+        $categories = Category::latest()->get();
 
         // dd($article);
         if (!$article) abort(404);
@@ -388,6 +391,73 @@ class Articles extends Controller
         } catch (\Exception $e) {
             DB::rollBack();
             return response()->json(['status' => 'error', 'message' => $e->getMessage()], 500);
+        }
+    }
+
+
+    public function articleFilter(Request $request)
+    {
+        try {
+            $query = Article::with(['tags', 'category', 'user']);
+
+            //? Check if a start date is provided
+            if ($request->filled('startDate')) {
+                $startDate = Carbon::createFromFormat('d-m-Y', $request->startDate)->startOfDay();
+                $query->where('created_at', '>=', $startDate);
+            }
+
+            //? Check if an end date is provided
+            if ($request->filled('endDate')) {
+                $endDate = Carbon::createFromFormat('d-m-Y', $request->endDate)->endOfDay();
+                $query->where('created_at', '<=', $endDate);
+            }
+
+            //? Check if category is provided
+            if ($request->filled('category')) {
+                $query->where('category_id', (int) $request->category);
+            }
+
+            //? Check if slider is provided
+            if ($request->filled('slider')) {
+                $query->where('is_slider', $request->slider);
+            }
+
+            //? Check if banner positions are provided
+            if ($request->filled('banner_right_top')) {
+                $query->where('is_banner_right_top', $request->banner_right_top);
+            }
+            if ($request->filled('banner_right_bottom')) {
+                $query->where('is_banner_right_bottom', $request->banner_right_bottom);
+            }
+
+            //? Check if news type is provided
+            if ($request->filled('news_type')) {
+                $query->where($request->news_type, 1);
+            }
+
+            //? Check if status is provided
+            if ($request->filled('status')) {
+                $query->where('status', $request->status);
+            }
+
+            //? Check if publish is provided
+            if ($request->filled('publish')) {
+                if ($request->publish == 'draft') {
+                    $query->whereNull('published_at');
+                } else {
+                    $query->whereNotNull('published_at');
+                }
+            }
+
+            //? Get articles (latest first, max 20 unless a date filter is applied)
+            $articles = $query->latest()->paginate(10)->withQueryString();
+            $categories = Category::latest()->get();
+
+            // dd($articles);
+
+            return view('admin.articles.index', compact('articles', 'categories'));
+        } catch (\Exception $e) {
+            return back()->with('error', 'Invalid parameter formats: ' . $e->getMessage());
         }
     }
 

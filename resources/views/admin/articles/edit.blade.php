@@ -63,7 +63,7 @@
                                             class="d-flex badge align-items-center bg-light bg-success justify-content-center rounded-full text-dark fw-bold gap-2">
                                             <span>{{ $tag->name }}</span>
                                             <span style="width:20px; height:20px; cursor:pointer"
-                                                onclick="deleteTag(this,  '{{ $tag->id }}', '{{ $article->id }}', 'author')">
+                                                onclick="deleteTag(this,  '{{ $tag->id }}', '{{ $article->id }}', 'admin')">
                                                 <img src="{{ asset('admin/assets/img/icons/multiply.png') }}" />
                                             </span>
                                         </div>

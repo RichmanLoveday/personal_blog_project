@@ -106,6 +106,7 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::put('/admin/tag/update', 'updateTag')->name('admin.tag.update');
         Route::put('/admin/tag/statusUpdate', 'updateTagStatus')->name('admin.tag.status.update');
         Route::delete('/admin/tag/delete/{id}', 'deleteTag')->name('admin.tag.delete');
+        Route::delete('/admin/article/tag/delete/{tagId}/{articleId}', 'deleteArticleTag')->name('admin.article.tag.delete');
         Route::get('/admin/tags/search/{name}', 'searchTags')->name('author.tags.search');
     });
 
@@ -123,6 +124,7 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::put('/admin/article/updateStatus', 'updateStatus')->name('admin.article.update.status');
         Route::put('/admin/article/updateBannerTop', 'updateBannerTop')->name('admin.article.update.banner.top');
         Route::put('/admin/article/updateBannerBottom', 'updateBannerBottom')->name('admin.artcicle.update.banner.bottom');
+        Route::get('/admin/article/search', 'articleFilter')->name('admin.article.filter');
     });
 });
 
@@ -149,6 +151,7 @@ Route::middleware(['auth', 'role:author', 'isActive'])->group(function () {
         Route::delete('/author/article/delete/{id}', 'deleteArticle')->name('author.article.delete');
         Route::put('/author/article/updateNewsType', 'updateNewsType')->name('author.article.updateNewsType');
         Route::put('/author/article/update', 'updateArticle')->name('author.article.update');
+        Route::get('/author/article/search', 'articleFilter')->name('author.article.filter');
     });
 
     Route::controller(AuthorTagsController::class)->group(function () {
