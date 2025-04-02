@@ -186,12 +186,21 @@ class Articles extends Controller
                 $article->image = $filePath;
             }
 
+            //? upadte publish at
+            if ($request->status == 'published' && is_null($article->published_at)) {
+                $article->published_at = now();
+            }
+
+            if ($request->status == 'draft') {
+                $article->published_at = Null;
+            }
+
             //? update articles
             $article->category_id = $request->category;
             $article->text = $request->description1;
             $article->title = $request->title;
             $article->slug = Str::lower(Str::slug($request->title));
-            $article->published_at = $request->status == 'published' ? now() : null;
+            // $article->published_at = $request->status == 'published' ? now() : null;
             $article->is_trending = $request->has('trending_news') ? true : false;
             $article->is_featured = $request->has('featured_news') ? true : false;
             $article->updated_at = now();

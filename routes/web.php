@@ -165,6 +165,7 @@ Route::middleware(['auth', 'role:author', 'isActive'])->group(function () {
 Route::controller(FrontendController::class)->group(function () {
     Route::get('/home', 'index')->name('home');
     Route::get('/home/getArticlesByCategory/{id}', 'getArticlesByCategory')->name('home.get.articles.by.category');
+    Route::get('/blog/{slug}', 'showBlog')->name('blog.show');
 });
 
 

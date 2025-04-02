@@ -41,7 +41,7 @@ function loadArticlesOnHtml(articles) {
                 <div class="col-xl-6 col-lg-12">
                     <div class="whats-news-single mb-40">
                         <div class="whates-img">
-                            <img src="${BASE_URL}/assets/img/gallery/whats_news_details1.png" alt="">
+                            <img  src="${BASE_URL}/${article.image}" alt="">
                         </div>
                         <div class="whates-caption">
                             <h4><a href="latest_news.html">${article.title.charAt(0).toUpperCase() + article.title.slice(1)}</a></h4>
@@ -69,7 +69,7 @@ function loadArticlesOnHtml(articles) {
             html += `<div class="col-xl-12 col-lg-6 col-md-6 col-sm-10">
                             <div class="whats-right-single mb-20">
                                 <div class="whats-right-img">
-                                    <img src="${BASE_URL}/assets/img/gallery/whats_right_img1.png" alt="">
+                                    <img style="width: 120px; height:100px;" src="${BASE_URL}/${article.image}" alt="">
                                 </div>
                                 <div class="whats-right-cap">
                                     <span class="${colors[(index - 1) % colors.length]}">

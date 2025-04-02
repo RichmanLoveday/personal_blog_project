@@ -15,7 +15,7 @@ class FrontendController extends Controller
     {
         //? get active slidders
         $sliders = Article::with(['category', 'user', 'tags'])
-            ->where('is_slider', false)
+            ->where('is_slider', true)
             ->where('status', 'active')
             ->whereNotNull('published_at')
             ->latest()
@@ -58,7 +58,7 @@ class FrontendController extends Controller
 
         $mostPopularArticles = Article::with(['category', 'user', 'tags'])
             ->where('status', 'active')
-            ->where('is_popular', true)
+            ->where('views', 1)
             ->whereNotNull('published_at')
             ->latest()
             ->limit(20)
@@ -87,7 +87,7 @@ class FrontendController extends Controller
             ->get();
 
 
-        // dd($recentNews);
+        //  dd($bannerRightBottom);
 
         return view('index', compact(
             'sliders',
@@ -138,10 +138,44 @@ class FrontendController extends Controller
         }
     }
 
+    public function showBlog(string $slug)
+    {
+        $slugArr = explode('-', $slug);
+        $id = (int) $slugArr[count($slugArr) - 1];        //? get id
+
+        //? remove last index
+        array_pop($slugArr);
+        $slug = implode('-', $slugArr);
+
+
+        //? check if article exist
+        $article = Article::with(['category', 'user', 'tags'])
+            ->where('id', $id)
+            ->where('slug', $slug)
+            ->whereNotNull('published_at')
+            ->where('status', 'active')
+            ->first();
+
+        $categories = Category::with(['posts' => function ($query) {
+            $query->where('status', 'active')
+                ->whereNotNull('published_at');
+        }])
+            ->where('status', 'active')
+            ->get();
+
+        if (!$article) abort(404);
+
+        //  dd($article);
+
+        //? update views by incrementation
+        Article::where('id', $id)
+            ->increment('views');
+
+        //? return view
+        return view('blog_detail', compact('article', 'categories'));
+    }
 
     public function about() {}
 
     public function blogs() {}
-
-    public function showBlog() {}
 }

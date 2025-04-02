@@ -7,69 +7,47 @@
                 <div class="col-lg-8 posts-list">
                     <div class="single-post">
                         <div class="feature-img">
-                            <img class="img-fluid" src="{{ asset('assets/img/blog/single_blog_1.png') }}" alt="">
+                            <img class="img-fluid" src="{{ asset($article->image) }}" alt="">
                         </div>
                         <div class="blog_details">
-                            <h2>Second divided from form fish beast made every of seas
-                                all gathered us saying he our
+                            <h2>
+                                {{ Str::upper($article->title) }}
                             </h2>
                             <ul class="blog-info-link mt-3 mb-4">
-                                <li><a href="#"><i class="fa fa-user"></i> Travel, Lifestyle</a></li>
+                                <li><i class="fa fa-user"></i>
+                                    @isset($artilce->tags)
+                                        @foreach ($artilce->tags as $tag)
+                                            {{ $tag }}
+                                            @if ($loop->index > 0)
+                                                <a href="#"> {{ '#' . $tag->name }}</a>
+                                                @continue
+                                            @endif
+
+                                            <a href="#"> ,{{ '#' . $tag->name }}</a>
+                                        @endforeach
+                                    @endisset
+                                </li>
                                 <li><a href="#"><i class="fa fa-comments"></i> 03 Comments</a></li>
                             </ul>
-                            <p class="excert">
-                                MCSE boot camps have its supporters and its detractors. Some people do not understand why
-                                you
-                                should have to spend money on boot camp when you can get the MCSE study materials yourself
-                                at a
-                                fraction of the camp price. However, who has the willpower
-                            </p>
-                            <p>
-                                MCSE boot camps have its supporters and its detractors. Some people do not understand why
-                                you
-                                should have to spend money on boot camp when you can get the MCSE study materials yourself
-                                at a
-                                fraction of the camp price. However, who has the willpower to actually sit through a
-                                self-imposed MCSE training. who has the willpower to actually
-                            </p>
-                            <div class="quote-wrapper">
-                                <div class="quotes">
-                                    MCSE boot camps have its supporters and its detractors. Some people do not understand
-                                    why you
-                                    should have to spend money on boot camp when you can get the MCSE study materials
-                                    yourself at
-                                    a fraction of the camp price. However, who has the willpower to actually sit through a
-                                    self-imposed MCSE training.
-                                </div>
+
+                            <div>
+                                {!! $article->text !!}
                             </div>
-                            <p>
-                                MCSE boot camps have its supporters and its detractors. Some people do not understand why
-                                you
-                                should have to spend money on boot camp when you can get the MCSE study materials yourself
-                                at a
-                                fraction of the camp price. However, who has the willpower
-                            </p>
-                            <p>
-                                MCSE boot camps have its supporters and its detractors. Some people do not understand why
-                                you
-                                should have to spend money on boot camp when you can get the MCSE study materials yourself
-                                at a
-                                fraction of the camp price. However, who has the willpower to actually sit through a
-                                self-imposed MCSE training. who has the willpower to actually
-                            </p>
                         </div>
                     </div>
                     <div class="navigation-top"></div>
                     <div class="blog-author">
                         <div class="media align-items-center">
-                            <img src="{{ asset('assets/img/blog/author.png') }}" alt="">
+                            <img src=" {{ !is_null($article->user->photo) ? asset($article->user->photo) : asset('admin/assets/img/icons/person_icon.png') }}"
+                                alt="{{ $article->title }}">
                             <div class="media-body">
                                 <a href="#">
-                                    <h4>Harvard milan</h4>
+                                    <h4>{{ Str::ucfirst($article->user->firstName) . ' ' . Str::ucfirst($article->user->lastName) }}
+                                    </h4>
                                 </a>
-                                <p>Second divided from form fish beast made. Every of seas all gathered use saying you're,
-                                    he
-                                    our dominion twon Second divided from</p>
+                                <p>
+                                    {{ $article->user->aboutMe }}
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -94,42 +72,16 @@
                         <aside class="single_sidebar_widget post_category_widget">
                             <h4 class="widget_title">Category</h4>
                             <ul class="list cat-list">
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>Resaurant food</p>
-                                        <p>(37)</p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>Travel news</p>
-                                        <p>(10)</p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>Modern technology</p>
-                                        <p>(03)</p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>Product</p>
-                                        <p>(11)</p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>Inspiration</p>
-                                        <p>(21)</p>
-                                    </a>
-                                </li>
-                                <li>
-                                    <a href="#" class="d-flex">
-                                        <p>Health Care</p>
-                                        <p>(21)</p>
-                                    </a>
-                                </li>
+                                @isset($categories)
+                                    @foreach ($categories as $category)
+                                        <li>
+                                            <a href="#" class="d-flex">
+                                                <p>{{ Str::ucfirst($category->name) }}</p>
+                                                <p> ({{ count($category->posts) }})</p>
+                                            </a>
+                                        </li>
+                                    @endforeach
+                                @endisset
                             </ul>
                         </aside>
                         <aside class="single_sidebar_widget popular_post_widget">

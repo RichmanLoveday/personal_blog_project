@@ -14,12 +14,13 @@
                                     <div class="single-slider">
                                         <div class="trending-top mb-30">
                                             <div class="trend-top-img">
-                                                <img src="{{ asset('assets/img/trending/trending_top2.jpg') }}" alt="">
+                                                <img src="{{ asset($slider->image) }}" alt="">
                                                 <div class="trend-top-cap">
                                                     <span class="bgr" data-animation="fadeInUp" data-delay=".2s"
                                                         data-duration="1000ms"> {{ Str::upper($slider->category->name) }}
                                                     </span>
-                                                    <h2><a href="latest_news.html" data-animation="fadeInUp" data-delay=".4s"
+                                                    <h2><a href="{{ route('blog.show', $slider->slug . '-' . $slider->id) }}"
+                                                            data-animation="fadeInUp" data-delay=".4s"
                                                             data-duration="1000ms">{{ Str::ucfirst($slider->title) }} </a></h2>
                                                     <p data-animation="fadeInUp" data-delay=".6s" data-duration="1000ms">
                                                         by
@@ -41,10 +42,12 @@
                                 <div class="col-lg-12 col-md-6 col-sm-6">
                                     <div class="trending-top mb-30">
                                         <div class="trend-top-img">
-                                            <img src="{{ asset('assets/img/gallery/whats_news_details1.png') }}" alt="">
+                                            <img src="{{ asset($bannerRightTop->image) }}" alt="">
                                             <div class="trend-top-cap trend-top-cap2">
                                                 <span class="bgb">{{ Str::upper($bannerRightTop->category->name) }} </span>
-                                                <h2><a href="latest_news.html">{{ $bannerRightTop->title }} </a></h2>
+                                                <h2><a
+                                                        href="{{ route('blog.show', $bannerRightTop->slug . '-' . $bannerRightTop->id) }}">{{ $bannerRightTop->title }}
+                                                    </a></h2>
                                                 <p>by
                                                     {{ Str::ucfirst($bannerRightTop->user->firstName . ' ' . $bannerRightTop->user->lastName) }}
                                                     -
@@ -59,12 +62,14 @@
                                 <div class="col-lg-12 col-md-6 col-sm-6">
                                     <div class="trending-top mb-30">
                                         <div class="trend-top-img">
-                                            <img src="{{ asset('assets/img/gallery/whats_news_details1.png') }}"
+                                            <img src="{{ asset($bannerRightBottom->image) }}"
                                                 alt="{{ $bannerRightBottom->title }}">
                                             <div class="trend-top-cap trend-top-cap2">
                                                 <span class="bgg">{{ Str::upper($bannerRightBottom->category->name) }}
                                                 </span>
-                                                <h2><a href="latest_news.html">{{ $bannerRightBottom->title }} </a></h2>
+                                                <h2><a
+                                                        href="{{ route('blog.show', $bannerRightBottom->slug . '-' . $bannerRightBottom->id) }}">{{ $bannerRightBottom->title }}
+                                                    </a></h2>
                                                 <p>by
                                                     {{ $bannerRightBottom->user->firstName . ' ' . $bannerRightBottom->user->lastName }}
                                                     -
@@ -111,6 +116,14 @@
                                                         @continue
                                                     @endif
 
+                                                    @if ($loop->index == 4)
+                                                        <a href="#" class="nav-item nav-link" id="nav-home-tab"
+                                                            data-toggle="tab" href="#nav-home" role="tab"
+                                                            aria-controls="nav-home" aria-selected="true">
+                                                            +More
+                                                        </a>
+                                                        @break
+                                                    @endif
                                                     <a onclick="getArticleByCategory('{{ $category->id }}')"
                                                         class="nav-item nav-link" id="nav-home-tab"
                                                         data-category="{{ $category->id }}" data-toggle="tab" href="#nav-home"
@@ -155,12 +168,11 @@
                                                             <div class="col-xl-6 col-lg-12">
                                                                 <div class="whats-news-single mb-40 mb-40">
                                                                     <div class="whates-img">
-                                                                        <img src="{{ asset('assets/img/gallery/whats_news_details1.png') }}"
-                                                                            alt="">
+                                                                        <img src="{{ asset($article->image) }}" alt="">
                                                                     </div>
                                                                     <div class="whates-caption">
                                                                         <h4><a
-                                                                                href="latest_news.html">{{ Str::ucfirst($article->title) }}</a>
+                                                                                href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">{{ Str::ucfirst($article->title) }}</a>
                                                                         </h4>
                                                                         <span>by
                                                                             {{ Str::ucfirst($article->user->firstName) . ' ' . Str::ucfirst($article->user->lasttName) }}
@@ -201,14 +213,15 @@
                                                                 <div class="col-xl-12 col-lg-6 col-md-6 col-sm-10">
                                                                     <div class="whats-right-single mb-20">
                                                                         <div class="whats-right-img">
-                                                                            <img src="{{ asset('assets/img/gallery/whats_right_img1.png') }}"
+                                                                            <img style="width: 120px; height:100px;"
+                                                                                src="{{ asset($article->image) }}"
                                                                                 alt="">
                                                                         </div>
                                                                         <div class="whats-right-cap">
                                                                             <span
                                                                                 class="{{ $color }}">{{ Str::upper($article->category->name) }}</span>
                                                                             <h4><a
-                                                                                    href="latest_news.html">{{ Str::words(Str::ucfirst($article->title), 10, '...') }}</a>
+                                                                                    href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">{{ Str::words(Str::ucfirst($article->title), 10, '...') }}</a>
                                                                             </h4>
                                                                             <p> {{ date('M d, Y', strtotime($article->published_at)) }}
                                                                             </p>
@@ -250,10 +263,11 @@
                                 @if ($loop->first)
                                     <div class="most-recent mb-40">
                                         <div class="most-recent-img">
-                                            <img src="{{ asset('assets/img/gallery/most_recent.png') }}" alt="">
+                                            <img src="{{ asset($article->image) }}" alt="">
                                             <div class="most-recent-cap">
                                                 <span class="bgbeg">{{ Str::upper($article->category->name) }}</span>
-                                                <h4><a href="latest_news.html"> {{ Str::ucfirst($article->title) }} </a></h4>
+                                                <h4><a href="{{ route('blog.show', $article->slug . '-' . $slider->id) }}">
+                                                        {{ Str::ucfirst($article->title) }} </a></h4>
                                                 <p>{{ Str::ucfirst($article->user->firstName) . ' ' . Str::ucfirst($article->user->lasttName) }}
                                                     | @if (\Carbon\Carbon::parse($article->published_at)->diffInHours(now()) < 24)
                                                         {{ \Carbon\Carbon::parse($article->published_at)->diffForHumans() }}
@@ -270,10 +284,12 @@
                                 <!-- Single -->
                                 <div class="most-recent-single">
                                     <div class="most-recent-images">
-                                        <img src="{{ asset('assets/img/gallery/most_recent1.png') }}" alt="">
+                                        <img style="width: 90px; height:80px;" src="{{ asset($article->image) }}"
+                                            alt="">
                                     </div>
                                     <div class="most-recent-capt">
-                                        <h4><a href="latest_news.html">{{ Str::ucfirst($article->title) }}</a>
+                                        <h4><a
+                                                href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">{{ Str::ucfirst($article->title) }}</a>
                                         </h4>
                                         <p> {{ Str::ucfirst($article->user->firstName) . ' ' . Str::ucfirst($article->user->lasttName) }}
                                             | @if (\Carbon\Carbon::parse($article->published_at)->diffInHours(now()) < 24)
@@ -376,11 +392,12 @@
                                                                 @foreach ($trendingNews as $article)
                                                                     <div class="weekly3-single">
                                                                         <div class="weekly3-img">
-                                                                            <img src="{{ asset('assets/img/gallery/weekly2News4.png') }}"
+                                                                            <img src="{{ asset($article->image) }}"
                                                                                 alt="">
                                                                         </div>
                                                                         <div class="weekly3-caption">
-                                                                            <h4><a href="latest_news.html">
+                                                                            <h4><a
+                                                                                    href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">
                                                                                     {{ Str::ucfirst($article->title) }}</a>
                                                                             </h4>
                                                                             <p> {{ date('M d, Y', strtotime($article->published_at)) }}
@@ -428,11 +445,11 @@
                                             @foreach ($featureNews as $article)
                                                 <div class="weekly3-single">
                                                     <div class="weekly3-img">
-                                                        <img src="{{ asset('assets/img/gallery/weekly2News4.png') }}"
-                                                            alt="">
+                                                        <img src="{{ asset($article->image) }}" alt="">
                                                     </div>
                                                     <div class="weekly3-caption">
-                                                        <h4><a href="latest_news.html">
+                                                        <h4><a
+                                                                href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">
                                                                 {{ Str::ucfirst($article->title) }}</a>
                                                         </h4>
                                                         <p> {{ date('M d, Y', strtotime($article->published_at)) }}
