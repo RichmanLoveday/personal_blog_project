@@ -25,7 +25,7 @@ class Articles extends Controller
         $articles = Article::with(['tags', 'category', 'user'])
             ->latest()
             ->paginate(10)
-            ->withQueryString();
+            ->appends(request()->query());
 
         $categories = Category::latest()->get();
 
@@ -118,7 +118,7 @@ class Articles extends Controller
         }
     }
 
-    private function uploadImage(Request $request, string|int $articleId = null): string
+    private function uploadImage(Request $request, string|int|null $articleId = null): string
     {
         $directory = public_path('uploads/article_images');
 

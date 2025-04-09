@@ -21,16 +21,19 @@ class Subscribtion extends Controller
             $exists = Subscribers::where('email', $request->email)->exists();
 
             if ($exists) {
-                throw new HttpException(409, 'Email already exists in the database.');
+                return response()->json([
+                    'status' => 'error',
+                    'message' => 'Email already exists in the database.',
+                ], 409);
             }
 
             //? insert the email into the database
             Subscribers::create([
                 'email' => $request->email,
-                'region' => $request->user_region,
-                'city' => $request->user_city,
-                'ip' => $request->user_ip,
-                'country' => $request->user_country,
+                'region' => $request->user_region ?? null,
+                'city' => $request->user_city ?? null,
+                'ip' => $request->user_ip ?? null,
+                'country' => $request->user_country ?? null,
             ]);
 
             return response()->json([
@@ -40,8 +43,8 @@ class Subscribtion extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status' => 'error',
-                'message' => $e->getMessage(),
-            ],  500);
+                'message' => 'An unexpected error occurred.',
+            ], 500);
         }
     }
 

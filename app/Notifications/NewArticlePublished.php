@@ -45,8 +45,8 @@ class NewArticlePublished extends Notification
             ->view('emails.new_article_published', [
                 'articleImage' => $this->article->image,
                 'articleTitle' => $this->article->title,
-                'articleSummary' => Str::words($this->article->text, 25, '...'),
-                'articleUrl' => url(route('articles.show', $this->article->id)),
+                'articleSummary' => $this->article->text,
+                'articleUrl' => url(route('blog.show', $this->article->id)),
                 'unsubscribeLink' => url(route('unsubscribe', $notifiable->id)),
             ]);
     }

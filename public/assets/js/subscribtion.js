@@ -1,9 +1,4 @@
 const csrf = $('meta[name="csrf-token"]').attr("content");
-// $.ready(function () {
-//     //? get user location
-//     getLocation();
-// });
-
 function subscribe(ele) {
     ele.preventDefault()
 

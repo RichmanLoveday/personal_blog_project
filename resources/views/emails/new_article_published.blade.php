@@ -88,11 +88,11 @@
             <img src="{{ asset('admin/assets/img/logo.png') }}" alt="Logo" class="logo">
         </div>
 
-        <img src="{{ $articleImage }}" alt="Article Image" class="article-image">
+        <img src="{{ asset($articleImage) }}" alt="Article Image" class="article-image">
 
         <div class="content">
             <h1>{{ $articleTitle }}</h1>
-            <p>{{ $articleSummary }}</p>
+            <p>{!! Str::words($articleSummary, 25, '...') !!}</p>
             <a href="{{ $articleUrl }}" class="button">Read Full Article</a>
         </div>
 
