@@ -5,15 +5,18 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
+use App\Jobs\SendArticleNotification;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
+use App\Models\Subscribers;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
+use App\Notifications\NewArticlePublished;
 
 class Articles extends Controller
 {
@@ -71,6 +74,9 @@ class Articles extends Controller
             ]);
 
             if (!empty($tagIds)) $article->tags()->sync($tagIds);
+
+            //? Dispatch the job to send emails
+            SendArticleNotification::dispatch($article, Auth::user());
 
             DB::commit();
             return response()->json([

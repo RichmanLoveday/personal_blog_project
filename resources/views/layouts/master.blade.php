@@ -11,9 +11,9 @@
     <title>News HTML-5 Template </title>
     <meta name="description" content="">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
     <link rel="manifest" href="site.html">
     <link rel="shortcut icon" type="image/x-icon" href="{{ asset('assets/img/favicon.ico') }}">
-
     <!-- CSS here -->
     <link rel="stylesheet" href="{{ asset('assets/css/bootstrap.min.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/owl.carousel.min.css') }}">
@@ -27,7 +27,9 @@
     <link rel="stylesheet" href="{{ asset('assets/css/slick.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/nice-select.css') }}">
     <link rel="stylesheet" href="{{ asset('assets/css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.css">
     <script src="{{ asset('assets/js/config.js') }}"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/toastr.js/latest/toastr.min.js"></script>
 
 </head>
 
@@ -101,7 +103,7 @@
                                             <li><a href="{{ route('home') }}">Home</a></li>
                                             <li><a href="{{ route('about') }}">about</a></li>
                                             <li><a href="{{ route('category') }}">Category</a></li>
-                                            <li><a href="{{ route('blogs') }}">Blogs</a></li>
+                                            <li><a href="{{ route('blogs.all') }}">Blogs</a></li>
                                             <li><a href="{{ route('contact') }}">Contact</a></li>
                                         </ul>
                                     </nav>
@@ -135,7 +137,7 @@
     </main>
 
 
-    @include('utils.footer')
+    @include('utils.footer', ['popularArticles' => $popularArticles ?? null])
 
     <!-- Search model Begin -->
     <div class="search-model-box">
@@ -184,8 +186,7 @@
     <script src="{{ asset('assets/js/plugins.js') }}"></script>
     <script src="{{ asset('assets/js/main.js') }}"></script>
 
+    <script src="{{ asset('assets/js/subscribtion.js') }}"></script>
 </body>
-
-<!-- Mirrored from themewagon.github.io/news/index.html by HTTrack Website Copier/3.x [XR&CO'2014], Wed, 19 Feb 2025 11:46:31 GMT -->
 
 </html>

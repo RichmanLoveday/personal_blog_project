@@ -178,7 +178,8 @@
                                                                             {{ Str::ucfirst($article->user->firstName) . ' ' . Str::ucfirst($article->user->lasttName) }}
                                                                             -
                                                                             {{ date('M d, Y', strtotime($article->published_at)) }}</span>
-                                                                        <p>{{ Str::words($article->text, 20, '...') }}</p>
+                                                                        <p>{!! Str::words($article->text, 20, '...') !!}
+                                                                        </p>
                                                                     </div>
                                                                 </div>
                                                             </div>

@@ -15,19 +15,12 @@
                             </h2>
                             <ul class="blog-info-link mt-3 mb-4">
                                 <li><i class="fa fa-user"></i>
-                                    @isset($artilce->tags)
-                                        @foreach ($artilce->tags as $tag)
-                                            {{ $tag }}
-                                            @if ($loop->index > 0)
-                                                <a href="#"> {{ '#' . $tag->name }}</a>
-                                                @continue
-                                            @endif
-
-                                            <a href="#"> ,{{ '#' . $tag->name }}</a>
-                                        @endforeach
-                                    @endisset
+                                    @foreach ($article->tags as $tag)
+                                        <a href="{{ route('blog.tag.name', $tag->slug) }}">
+                                            {{ '#' . $tag->name }},</a>
+                                    @endforeach
                                 </li>
-                                <li><a href="#"><i class="fa fa-comments"></i> 03 Comments</a></li>
+                                {{-- <li><a href="#"><i class="fa fa-comments"></i> 03 Comments</a></li> --}}
                             </ul>
 
                             <div>
@@ -75,7 +68,7 @@
                                 @isset($categories)
                                     @foreach ($categories as $category)
                                         <li>
-                                            <a href="#" class="d-flex">
+                                            <a href="{{ route('blog.category.name', $category->slug) }}" class="d-flex">
                                                 <p>{{ Str::ucfirst($category->name) }}</p>
                                                 <p> ({{ count($category->posts) }})</p>
                                             </a>
@@ -86,42 +79,24 @@
                         </aside>
                         <aside class="single_sidebar_widget popular_post_widget">
                             <h3 class="widget_title">Recent Post</h3>
-                            <div class="media post_item">
-                                <img src="{{ asset('assets/img/post/post_1.png') }}" alt="post">
-                                <div class="media-body">
-                                    <a href="single-blog.html">
-                                        <h3>From life was you fish...</h3>
-                                    </a>
-                                    <p>January 12, 2019</p>
+                            @foreach ($recentPosts as $article)
+                                <div class="media post_item">
+                                    <img style="width: 80px; height:90px;" src="{{ asset($article->image) }}"
+                                        alt="post">
+                                    <div class="media-body">
+                                        <a href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">
+                                            <h3>{{ $article->title }}</h3>
+                                        </a>
+                                        <p>
+                                            @if (\Carbon\Carbon::parse($article->published_at)->diffInHours(now()) < 24)
+                                                {{ \Carbon\Carbon::parse($article->published_at)->diffForHumans() }}
+                                            @else
+                                                {{ \Carbon\Carbon::parse($article->published_at)->format('M d, Y') }}
+                                            @endif
+                                        </p>
+                                    </div>
                                 </div>
-                            </div>
-                            <div class="media post_item">
-                                <img src="{{ asset('assets/img/post/post_2.png') }}" alt="post">
-                                <div class="media-body">
-                                    <a href="single-blog.html">
-                                        <h3>The Amazing Hubble</h3>
-                                    </a>
-                                    <p>02 Hours ago</p>
-                                </div>
-                            </div>
-                            <div class="media post_item">
-                                <img src="{{ asset('assets/img/post/post_3.png') }}" alt="post">
-                                <div class="media-body">
-                                    <a href="single-blog.html">
-                                        <h3>Astronomy Or Astrology</h3>
-                                    </a>
-                                    <p>03 Hours ago</p>
-                                </div>
-                            </div>
-                            <div class="media post_item">
-                                <img src="{{ asset('assets/img/post/post_4.png') }}" alt="post">
-                                <div class="media-body">
-                                    <a href="single-blog.html">
-                                        <h3>Asteroids telescope</h3>
-                                    </a>
-                                    <p>01 Hours ago</p>
-                                </div>
-                            </div>
+                            @endforeach
                         </aside>
                         <aside class="single_sidebar_widget tag_cloud_widget">
                             <h4 class="widget_title">Tag Clouds</h4>

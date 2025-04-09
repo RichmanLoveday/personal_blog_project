@@ -29,38 +29,29 @@
                                 <h4>Popular post</h4>
                             </div>
                             <!-- Popular post -->
-                            <div class="whats-right-single mb-20">
-                                <div class="whats-right-img">
-                                    <img src="{{ asset('assets/img/gallery/footer_post1.png') }}" alt="">
-                                </div>
-                                <div class="whats-right-cap">
-                                    <h4><a href="latest_news.html">Scarlett’s disappointment at latest accolade</a>
-                                    </h4>
-                                    <p>Jhon | 2 hours ago</p>
-                                </div>
-                            </div>
-                            <!-- Popular post -->
-                            <div class="whats-right-single mb-20">
-                                <div class="whats-right-img">
-                                    <img src="{{ asset('assets/img/gallery/footer_post2.png') }}" alt="">
-                                </div>
-                                <div class="whats-right-cap">
-                                    <h4><a href="latest_news.html">Scarlett’s disappointment at latest accolade</a>
-                                    </h4>
-                                    <p>Jhon | 2 hours ago</p>
-                                </div>
-                            </div>
-                            <!-- Popular post -->
-                            <div class="whats-right-single mb-20">
-                                <div class="whats-right-img">
-                                    <img src="{{ asset('assets/img/gallery/footer_post3.png') }}" alt="">
-                                </div>
-                                <div class="whats-right-cap">
-                                    <h4><a href="latest_news.html">Scarlett’s disappointment at latest accolade</a>
-                                    </h4>
-                                    <p>Jhon | 2 hours ago</p>
-                                </div>
-                            </div>
+                            @isset($popularArticles)
+                                @foreach ($popularArticles as $article)
+                                    <!-- Popular post -->
+                                    <div class="whats-right-single mb-20">
+                                        <div class="whats-right-img">
+                                            <img style="width: 90px; height:80px" src="{{ asset($article->image) }}"
+                                                alt="{{ $article->title }}">
+                                        </div>
+                                        <div class="whats-right-cap">
+                                            <h4><a
+                                                    href="{{ route('blog.show', $article->slug . '-' . $article->id) }}">{{ $article->title }}</a>
+                                            </h4>
+                                            <p> {{ Str::ucfirst($article->user->firstName) . ' ' . Str::ucfirst($article->user->lasttName) }}
+                                                | @if (\Carbon\Carbon::parse($article->published_at)->diffInHours(now()) < 24)
+                                                    {{ \Carbon\Carbon::parse($article->published_at)->diffForHumans() }}
+                                                @else
+                                                    {{ \Carbon\Carbon::parse($article->published_at)->format('M d, Y') }}
+                                                @endif
+                                            </p>
+                                        </div>
+                                    </div>
+                                @endforeach
+                            @endisset
                         </div>
                     </div>
                     <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">

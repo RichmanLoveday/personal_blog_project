@@ -13,6 +13,7 @@ use App\Http\Controllers\Author\AuthorDashboard;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Author\ProfileController;
 use App\Http\Controllers\Author\TagsController as AuthorTagsController;
+use App\Http\Controllers\Subscribtion;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Facades\Route;
 
@@ -24,7 +25,7 @@ use Illuminate\Support\Facades\Route;
 //? ADMIN ROUTES
 // Route::view('/home', 'index')->name('home');
 Route::view('/about', 'about')->name('about');
-Route::view('/blogs', 'blogs')->name('blogs');
+// Route::view('/blogs', 'blogs')->name('blogs');
 Route::view('/blog_detail', 'blog_detail');
 Route::view('/category', 'category')->name('category');
 Route::view('/contact', 'contact')->name('contact');
@@ -161,11 +162,22 @@ Route::middleware(['auth', 'role:author', 'isActive'])->group(function () {
 });
 
 
+//? REDIRECT ROUTE
+Route::redirect('/', '/home')->name('home.redirect');
+
 //? FRONTEND CONTROLLER
 Route::controller(FrontendController::class)->group(function () {
     Route::get('/home', 'index')->name('home');
     Route::get('/home/getArticlesByCategory/{id}', 'getArticlesByCategory')->name('home.get.articles.by.category');
     Route::get('/blog/{slug}', 'showBlog')->name('blog.show');
+    Route::get('/blog/category/{slug}', 'getBlogsByCategory')->name('blog.category.name');
+    Route::get('/blog/tag/{slug}', 'getBlogByTag')->name('blog.tag.name');
+    Route::get('/blogs', 'getBlogs')->name('blogs.all');
+});
+
+Route::controller(Subscribtion::class)->group(function () {
+    Route::post('/subscribe/store', 'store')->name('subscribe.store');
+    Route::delete('/subscribe/delete/{id}', 'delete')->name('unsubscribe');
 });
 
 
