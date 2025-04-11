@@ -22,6 +22,8 @@ class Articles extends Controller
 {
     public function index()
     {
+        // echo url(route('blog.show', 333));
+        // die;
         $articles = Article::with(['tags', 'category', 'user'])
             ->latest()
             ->paginate(10)
@@ -75,8 +77,10 @@ class Articles extends Controller
 
             if (!empty($tagIds)) $article->tags()->sync($tagIds);
 
-            //? Dispatch the job to send emails
-            SendArticleNotification::dispatch($article, Auth::user());
+            //? Dispatch the job to send emails when artile status is published
+            if ($request->status == 'published') {
+                dispatch(new SendArticleNotification($article, Auth::user()));
+            }
 
             DB::commit();
             return response()->json([
@@ -156,6 +160,12 @@ class Articles extends Controller
                 'updated_at' => now(),
             ]);
 
+
+            //? check if published at is changed and new status is published
+            if ($request->status == 'published') {
+                //? dispatch job to send email
+                dispatch(new SendArticleNotification($article, Auth::user()));
+            }
 
             $statusInfo = $request->status == 'publish' ? 'published' : 'unpublished';
 
@@ -396,6 +406,12 @@ class Articles extends Controller
             //? add data to many relationship
             //  if (!empty($tagIds)) $article->tags()->sync($tagIds);
             if (!empty($tagIds)) $article->tags()->syncWithoutDetaching($tagIds);
+
+            //? check if published at is changed and new status is published
+            if ($article->wasChanged('published_at') && $request->status == 'published') {
+                //? dispatch job to send email
+                dispatch(new SendArticleNotification($article, Auth::user()));
+            }
 
 
             DB::commit();

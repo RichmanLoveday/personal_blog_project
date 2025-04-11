@@ -39,6 +39,9 @@ class NewArticlePublished extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        // echo url(route('blog.show', $this->article->id));
+        // echo url(route('unsubscribe', $notifiable->id));
+        // die;
         return (new MailMessage)
             ->from($this->senderModel->email, $this->senderModel->firstName . ' ' . $this->senderModel->lastName)
             ->subject('New Article Published: ' . $this->article->title)
@@ -46,7 +49,7 @@ class NewArticlePublished extends Notification
                 'articleImage' => $this->article->image,
                 'articleTitle' => $this->article->title,
                 'articleSummary' => $this->article->text,
-                'articleUrl' => url(route('blog.show', $this->article->id)),
+                'articleUrl' => url((route('blog.show', $this->article->slug . '-' . $this->article->id))),
                 'unsubscribeLink' => url(route('unsubscribe', $notifiable->id)),
             ]);
     }

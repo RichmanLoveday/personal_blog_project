@@ -33,8 +33,8 @@ class ResetPasswordNotification extends ResetPassword
     {
         // Customize the password reset URL based on the role
         $resetUrl = url(route("{$this->role}.reset.password", [
-            'token' => $this->token,
-            'email' => $notifiable->getEmailForPasswordReset(),
+            'token' => 44477474,
+            'email' => 366363636,
         ], false));
 
         // return (new MailMessage)
@@ -48,7 +48,7 @@ class ResetPasswordNotification extends ResetPassword
         return (new MailMessage)
             ->subject('Reset Your Password')
             ->view('emails.reset_password', [
-                'name' => $notifiable->firstName . ' ' . $notifiable->lastName,
+                'name' => 36363636,
                 'resetUrl' => $resetUrl,
                 'expireTime' => config('auth.passwords.' . config('auth.defaults.passwords') . '.expire'),
             ]);

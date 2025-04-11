@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Author;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreArticleRequest;
 use App\Http\Requests\UpdateArticleRequest;
+use App\Jobs\SendArticleNotification;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
@@ -69,6 +70,11 @@ class Articles extends Controller
 
             //? add data to many relationship
             if (!empty($tagIds)) $article->tags()->sync($tagIds);
+
+            //? Dispatch the job to send emails when artile status is published
+            if ($request->status == 'published') {
+                dispatch(new SendArticleNotification($article, Auth::user()));
+            }
 
             DB::commit();
             return response()->json([
@@ -212,6 +218,11 @@ class Articles extends Controller
             //  if (!empty($tagIds)) $article->tags()->sync($tagIds);
             if (!empty($tagIds)) $article->tags()->syncWithoutDetaching($tagIds);
 
+            //? check if published at is changed and new status is published
+            if ($article->wasChanged('published_at') && $request->status == 'published') {
+                //? dispatch job to send email
+                dispatch(new SendArticleNotification($article, Auth::user()));
+            }
 
             DB::commit();
             return response()->json([
@@ -240,6 +251,13 @@ class Articles extends Controller
                 'published_at' => $request->status == 'publish' ? now() : Null,
                 'updated_at' => now(),
             ]);
+
+
+            //? check if  status is published
+            if ($request->status == 'publish') {
+                //? dispatch job to send email
+                dispatch(new SendArticleNotification($article, Auth::user()));
+            }
 
 
             $statusInfo = $request->status == 'publish' ? 'published' : 'unpublished';
