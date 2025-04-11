@@ -160,9 +160,8 @@ class Articles extends Controller
                 'updated_at' => now(),
             ]);
 
-
             //? check if published at is changed and new status is published
-            if ($request->status == 'published') {
+            if ($request->status == 'publish') {
                 //? dispatch job to send email
                 dispatch(new SendArticleNotification($article, Auth::user()));
             }
