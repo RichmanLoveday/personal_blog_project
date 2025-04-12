@@ -13,6 +13,7 @@ use App\Http\Controllers\Author\AuthorDashboard;
 use App\Http\Controllers\FrontendController;
 use App\Http\Controllers\Author\ProfileController;
 use App\Http\Controllers\Author\TagsController as AuthorTagsController;
+use App\Http\Controllers\Category as ControllersCategory;
 use App\Http\Controllers\Subscribtion;
 use Illuminate\Http\Middleware\HandleCors;
 use Illuminate\Support\Facades\Route;
@@ -178,6 +179,13 @@ Route::controller(FrontendController::class)->group(function () {
 Route::controller(Subscribtion::class)->group(function () {
     Route::post('/subscribe/store', 'store')->name('subscribe.store');
     Route::delete('/subscribe/delete/{id}', 'delete')->name('unsubscribe');
+});
+
+
+Route::controller(ControllersCategory::class)->group(function () {
+    Route::get('/category', 'index')->name('category.all');
+    Route::get('/category/{slug}/article', 'getArticleByCategory')->name('category.article');
+    Route::get('/category/article/{categoryId}', 'getArticleByCategoryId')->name('category.article.id');
 });
 
 

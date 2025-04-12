@@ -1,4 +1,4 @@
-console.log(BASE_URL)
+
 function getArticleByCategory(id) {
     // console.log(id)
     //? clear article container and attach a spinner

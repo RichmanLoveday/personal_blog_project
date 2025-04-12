@@ -106,7 +106,7 @@
                                         <ul id="navigation">
                                             <li><a href="{{ route('home') }}">Home</a></li>
                                             <li><a href="{{ route('about') }}">about</a></li>
-                                            <li><a href="{{ route('category') }}">Category</a></li>
+                                            <li><a href="{{ route('category.all') }}">Category</a></li>
                                             <li><a href="{{ route('blogs.all') }}">Blogs</a></li>
                                             <li><a href="{{ route('contact') }}">Contact</a></li>
                                         </ul>

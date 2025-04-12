@@ -143,7 +143,7 @@
                             @isset($articles)
                                 @foreach ($articles as $article)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $articles->firstItem() + $loop->index }}</td>
                                         <td>{{ Str::words($article->title, 5, '......') }}</td>
                                         <td>
                                             <div class="" style="width: 50px; height:50px;">

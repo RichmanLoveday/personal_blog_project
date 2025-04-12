@@ -31,7 +31,7 @@
                             @isset($tags)
                                 @foreach ($tags as $tag)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $articles->firstItem() + $loop->index }}</td>
                                         <td>{{ Str::ucfirst($tag->name) }}</td>
                                         <td>{{ $tag->slug }}</td>
                                         <td>

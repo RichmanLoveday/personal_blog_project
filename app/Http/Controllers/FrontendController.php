@@ -175,6 +175,14 @@ class FrontendController extends Controller
             ->take(4)
             ->get();
 
+        $popularArticles = Article::with(['category', 'user', 'tags'])
+            ->where('created_at', '>=', now()->subWeek())
+            ->where('status', 'active')
+            ->whereNotNull('published_at')
+            ->orderByDesc('views')
+            ->take(3)
+            ->get();
+
         $categories = Category::with(['posts' => function ($query) {
             $query->where('status', 'active')
                 ->whereNotNull('published_at');
@@ -190,7 +198,7 @@ class FrontendController extends Controller
         Article::where('id', $id)->increment('views');
 
         //? return view
-        return view('blog_detail', compact('article', 'categories', 'recentPosts'));
+        return view('blog_detail', compact('article', 'categories', 'recentPosts', 'popularArticles'));
     }
 
     public function getBlogs()

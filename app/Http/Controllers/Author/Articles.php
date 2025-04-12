@@ -116,7 +116,7 @@ class Articles extends Controller
         }
     }
 
-    private function uploadImage(Request $request, string|int $articleId = null): string
+    private function uploadImage(Request $request, string|int|null $articleId = null): string
     {
         try {
             $directory = public_path('uploads/article_images');
