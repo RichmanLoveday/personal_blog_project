@@ -31,7 +31,7 @@
                             @isset($categories)
                                 @forelse ($categories as $category)
                                     <tr>
-                                        <td>{{ $loop->iteration }}</td>
+                                        <td>{{ $articles->firstItem() + $loop->index }}</td>
                                         <td>{{ Str::ucfirst($category->name) }}</td>
                                         <td>{{ $category->slug }}</td>
                                         <td>

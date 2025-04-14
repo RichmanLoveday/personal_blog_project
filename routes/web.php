@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\Admin\AdminAuthentication;
 use App\Http\Controllers\Admin\AdminDashboard;
+use App\Http\Controllers\Admin\Adverts;
 use App\Http\Controllers\Admin\Articles;
 use App\Http\Controllers\Admin\Author;
 use App\Http\Controllers\Admin\Category;
@@ -127,6 +128,17 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::put('/admin/article/updateBannerTop', 'updateBannerTop')->name('admin.article.update.banner.top');
         Route::put('/admin/article/updateBannerBottom', 'updateBannerBottom')->name('admin.artcicle.update.banner.bottom');
         Route::get('/admin/article/search', 'articleFilter')->name('admin.article.filter');
+    });
+
+
+    Route::controller(Adverts::class)->group(function () {
+        Route::get('/admin/adverts', 'index')->name('admin.advert.index');
+        Route::get('/admin/advert/add', 'create')->name('admin.advert.create');
+        Route::post('/admin/advert/store', 'store')->name('admin.advert.store');
+        Route::get('/admin/advert/edit/{id}', 'edit')->name('admin.advert.edit');
+        Route::put('/admin/advert/update', 'update')->name('admin.advert.update');
+        Route::put('/admin/advert/statusUpdate/{id}/{status}', 'statusUpdate')->name('admin.advert.status.update');
+        Route::delete('/admin/advert/delete/{id}', 'delete')->name('admin.advert.delete');
     });
 });
 

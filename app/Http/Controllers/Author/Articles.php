@@ -116,34 +116,37 @@ class Articles extends Controller
         }
     }
 
+
     private function uploadImage(Request $request, string|int|null $articleId = null): string
     {
         try {
             $directory = public_path('uploads/article_images');
 
+            // Ensure the directory exists or create it
             if (!File::exists($directory)) {
-                File::makeDirectory($directory, 0755, true, true);
+                File::makeDirectory($directory, 0755, true);
             }
 
+            //? If an article ID is provided, delete the existing image
             if (!is_null($articleId)) {
-                $articleImg = Article::where('id', $articleId)->first()->image;
-                File::delete(public_path($articleImg));
+                $article = Article::find($articleId);
+                if ($article && $article->image) {
+                    File::delete(public_path($article->image));
+                }
             }
 
-            $file =  $request->file('image');
-            $fileName = time() . '_' . $file->getClientOriginalName();
-            // $image = Image::read($file);
+            //? Handle the uploaded file
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                $file->move($directory, $fileName);
 
-            // //? Resize image
-            // $image->resize(300, 300, function ($constraint) {
-            //     $constraint->aspectRatio();
-            // })->save(public_path("uploads/article_images/$fileName"));
+                return "uploads/article_images/$fileName";
+            }
 
-            $file->move(public_path('uploads/article_images'), $fileName);
-
-            return "uploads/article_images/$fileName";
+            throw new \Exception('Invalid image file provided.');
         } catch (\Exception $e) {
-            throw $e;
+            throw new \Exception('Error uploading image: ' . $e->getMessage());
         }
     }
 

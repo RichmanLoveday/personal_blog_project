@@ -163,7 +163,7 @@
                                     alt="img"><span> Advert Management</span> <span
                                     class="menu-arrow"></span></a>
                             <ul>
-                                <li><a href="{{ route('advert.index') }}">All Adverts </a></li>
+                                <li><a href="{{ route('admin.advert.index') }}">All Adverts </a></li>
                                 <li><a href="newuser.html">Active Adverts </a></li>
                                 <li><a href="userlists.html">Inactive Adverts</a></li>
                             </ul>

@@ -7,7 +7,7 @@
                 <h6>Manage your Adverts</h6>
             </div>
             <div class="page-btn">
-                <a href="{{ route('article.add') }}" class="btn btn-added"><img
+                <a href="{{ route('admin.advert.create') }}" class="btn btn-added"><img
                         src="{{ asset('admin/assets/img/icons/plus.svg') }}" alt="img" class="me-1">Add New Advert</a>
             </div>
         </div>

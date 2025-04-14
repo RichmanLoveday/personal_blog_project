@@ -24,7 +24,7 @@ class Category extends Controller
                 ->where('status', 'active')
                 ->whereNotNull('published_at')
                 ->orderBy('published_at', 'desc')
-                ->paginate(10)
+                ->paginate(4)
                 ->withPath(route('category.article', $categories->first()->slug))
                 ->withQueryString();
         }
@@ -65,7 +65,7 @@ class Category extends Controller
                 ->where('status', 'active')
                 ->whereNotNull('published_at')
                 ->latest()
-                ->paginate(10)
+                ->paginate(4)
                 ->withPath(route('category.article', $category->slug))
                 ->withQueryString();
         }
@@ -86,7 +86,7 @@ class Category extends Controller
                 ->where('status', 'active')
                 ->whereNotNull('published_at')
                 ->latest()
-                ->paginate(10)
+                ->paginate(4)
                 ->withPath(route('category.article', $category->slug))
                 ->withQueryString();
 

@@ -124,24 +124,36 @@ class Articles extends Controller
 
     private function uploadImage(Request $request, string|int|null $articleId = null): string
     {
-        $directory = public_path('uploads/article_images');
+        try {
+            $directory = public_path('uploads/article_images');
 
-        if (!File::exists($directory)) {
-            File::makeDirectory($directory, 0755, true, true);
+            // Ensure the directory exists or create it
+            if (!File::exists($directory)) {
+                File::makeDirectory($directory, 0755, true);
+            }
+
+            //? If an article ID is provided, delete the existing image
+            if (!is_null($articleId)) {
+                $article = Article::find($articleId);
+                if ($article && $article->image) {
+                    File::delete(public_path($article->image));
+                }
+            }
+
+            //? Handle the uploaded file
+            if ($request->hasFile('image') && $request->file('image')->isValid()) {
+                $file = $request->file('image');
+                $fileName = time() . '_' . Str::slug(pathinfo($file->getClientOriginalName(), PATHINFO_FILENAME)) . '.' . $file->getClientOriginalExtension();
+                $file->move($directory, $fileName);
+
+                return "uploads/article_images/$fileName";
+            }
+
+            throw new \Exception('Invalid image file provided.');
+        } catch (\Exception $e) {
+            throw new \Exception('Error uploading image: ' . $e->getMessage());
         }
-
-        if (!is_null($articleId)) {
-            $articleImg = Article::where('id', $articleId)->first()->image;
-            File::delete(public_path($articleImg));
-        }
-
-        $file = $request->file('image');
-        $fileName = time() . '_' . $file->getClientOriginalName();
-        $file->move(public_path('uploads/article_images'), $fileName);
-
-        return "uploads/article_images/$fileName";
     }
-
 
     public function publishment(Request $request)
     {
