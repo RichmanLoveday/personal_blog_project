@@ -24,7 +24,7 @@ class ArticleFactory extends Factory
             'slug' => Str::slug($title),
             'image' => fake()->imageUrl(),
             'is_trending' => fake()->randomElement([false, true]),
-            'is_popular' => fake()->randomElement([false, true]),
+            //   'is_popular' => fake()->randomElement([false, true]),
             'is_featured' => fake()->randomElement([false, true]),
             'is_slider' => fake()->randomElement([false, true]),
             'is_banner_right_top' => fake()->randomElement([false, true]),

@@ -52,15 +52,10 @@
                             <tr>
                                 <th>#</th>
                                 <th>Title</th>
-                                <th>Image</th>
                                 <th>Ads Url</th>
-                                <th>Position</th>
-                                <th>Page</th>
                                 <th>Status</th>
-                                <th>Start Date</th>
-                                <th>End Date</th>
                                 <th>Created By</th>
-                                <th>Date Added</th>
+                                <th>Date Created</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
@@ -68,17 +63,8 @@
                             <tr>
                                 <td>1</td>
                                 <td>Pitt</td>
-                                <td>
-                                    <div class="" style="width: 50px; height:50px;">
-                                        <img src="{{ asset('admin/assets/img/customer/customer1.jpg') }}" alt="product">
-                                    </div>
-                                </td>
                                 <td><a href="www.google.com">Google</a></td>
-                                <td>Header</td>
-                                <td>Home Page</td>
                                 <td><span class="badges bg-lightgreen">Active</span></td>
-                                <td>1st Jan, 2025</td>
-                                <td>10th Jan, 2025</td>
                                 <td>Admin</td>
                                 <td>10th Jan, 2025</td>
                                 <td class="text-center">
@@ -115,17 +101,8 @@
                             <tr>
                                 <td>1</td>
                                 <td>Pitt</td>
-                                <td>
-                                    <div class="" style="width: 50px; height:50px;">
-                                        <img src="{{ asset('admin/assets/img/customer/customer1.jpg') }}" alt="product">
-                                    </div>
-                                </td>
                                 <td><a href="www.google.com">Google</a></td>
-                                <td>Header</td>
-                                <td>Home Page</td>
-                                <td><span class="badges bg-lightred">Active</span></td>
-                                <td>1st Jan, 2025</td>
-                                <td>10th Jan, 2025</td>
+                                <td><span class="badges bg-lightgreen">Active</span></td>
                                 <td>Admin</td>
                                 <td>10th Jan, 2025</td>
                                 <td class="text-center">
@@ -152,8 +129,8 @@
                                         </li>
                                         <li>
                                             <a href="javascript:void(0);" class="dropdown-item confirm-text"><img
-                                                    src="{{ asset('admin/assets/img/icons/delete1.svg') }}"
-                                                    class="me-2" alt="img">Delete
+                                                    src="{{ asset('admin/assets/img/icons/delete1.svg') }}" class="me-2"
+                                                    alt="img">Delete
                                                 Advert</a>
                                         </li>
                                     </ul>
