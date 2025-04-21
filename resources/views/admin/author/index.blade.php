@@ -61,7 +61,7 @@
                             @isset($allAuthors)
                                 @foreach ($allAuthors as $author)
                                     <tr>
-                                        <td>{{ $articles->firstItem() + $loop->index }}</td>
+                                        <td>{{ $allAuthors->firstItem() + $loop->index }}</td>
                                         <td>{{ Str::ucfirst($author->firstName) . ' ' . Str::ucfirst($author->lastName) }}</td>
                                         <td>{{ $author->email }}</td>
                                         <td>

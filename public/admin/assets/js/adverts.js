@@ -148,8 +148,10 @@ function validatePlacements() {
     let isValid = true;
     let positionPagePairs = new Set();
 
-    const advertTittle = $('#advert_title');;
-    const advertUrl = $('#advert_url');;
+    const advertTittle = $('#advert_title');
+    const advertUrl = $('#advert_url');
+    const startDate = $('#startDate');
+    const endDate = $('#endDate');
 
     if (!advertTittle.val()) {
         advertTittle.addClass('is-invalid');
@@ -168,6 +170,27 @@ function validatePlacements() {
         advertUrl.removeClass('is-invalid');
         advertUrl.next('.invalid-feedback').text('');
     }
+
+
+    if (!startDate.val()) {
+        startDate.addClass('is-invalid');
+        startDate.next('.invalid-feedback').text('Start date is required.');
+        isValid = false;
+    } else {
+        startDate.removeClass('is-invalid');
+        startDate.next('.invalid-feedback').text('');
+    }
+
+    if (!endDate.val()) {
+        endDate.addClass('is-invalid');
+        endDate.next('.invalid-feedback').text('End date is required.');
+        isValid = false;
+    } else {
+        endDate.removeClass('is-invalid');
+        endDate.next('.invalid-feedback').text('');
+    }
+
+
 
     $('#placements #placement-group').each(function () {
         const positionSelect = $(this).find('.position-select');
