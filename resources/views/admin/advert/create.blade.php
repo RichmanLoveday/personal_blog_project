@@ -40,9 +40,8 @@
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label for="endDate">End Date</label>
-                                <input id="endDate" type="text" @disabled(!request('endDate'))
-                                    value="{{ old('endDate', request('endDate')) }}" name="endDate"
-                                    class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                <input id="endDate" type="text" value="{{ old('endDate', request('endDate')) }}"
+                                    name="endDate" class="datetimepicker cal-icon" placeholder="Choose End Date">
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>

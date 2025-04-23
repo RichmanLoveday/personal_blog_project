@@ -261,7 +261,7 @@ function validatePlacements() {
                             `Image dimensions must be ${requiredDimensions.width} x ${requiredDimensions.height} pixels, but you provided ${this.width} x ${this.height} pixels.`
                         );
                     } else {
-                        imageInput.next().next().removeClass('is-invalid');
+                        imageInput.removeClass('is-invalid').next().next().removeClass('is-invalid');
                         imageInput.next().next().text('');
                     }
                 };
@@ -310,3 +310,29 @@ function submitForm(event) {
         }
     });
 }
+
+
+
+$(document).ready(function () {
+    // Initialize datetimepickers
+    $('#startDate').datetimepicker({
+        format: 'DD-MM-YYYY',
+        useCurrent: false, // Important to prevent auto-selecting current date
+        ignoreReadonly: true,
+        minDate: moment(), // Disable previous days
+    });
+
+    $('#endDate').datetimepicker({
+        format: 'DD-MM-YYYY',
+        useCurrent: false,
+        ignoreReadonly: true,
+    });
+
+    //? When start date is selected, update end date's minDate
+    $("#startDate").on("dp.change", function (e) {
+        $('#endDate')
+            .prop('disabled', false)
+            .val("")
+            .data("DateTimePicker").minDate(e.date);
+    });
+});
