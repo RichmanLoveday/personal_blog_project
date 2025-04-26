@@ -13,7 +13,7 @@ function getPagesForBanner(ele) {
     const wrapper = $(ele).closest('#placement-group');
     const pageSelect = wrapper.find('.page-select');
     const selectedPosition = $(ele).val();
-    const selectImage = wrapper.find('#image');
+    const selectImage = wrapper.find('.image');
 
     console.log(selectImage)
 
@@ -80,7 +80,7 @@ function addMorePlacement(event) {
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                 <div class="form-group">
                     <label>Select Position</label>
-                    <select onchange="getPagesForBanner(this)" name="placements[${placement}][position]" class="select form-select position-select"
+                    <select onchange="getPagesForBanner(this)" id="placements.${placement}.position" name="placements[${placement}][position]" class="select form-select position-select"
                         name="position">
                         <option value="">Choose Position</option>
                         <option value="top_banner">Top Banner</option>
@@ -95,7 +95,7 @@ function addMorePlacement(event) {
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                 <div class="form-group">
                     <label>Select Page</label>
-                    <select class="select form-select page-select" name="placements[${placement}][page]">
+                    <select class="select form-select page-select" id="placements.${placement}.page" name="placements[${placement}][page]">
                         <option value="">Choose Page</option>
                         <option value="draft">Draft</option>
                         <option value="published">Publish</option>
@@ -107,8 +107,8 @@ function addMorePlacement(event) {
             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                 <div class="form-group">
                     <label>Add Placement Image</label>
-                    <input type="file" id="image" name="placements[${placement}][image]" onchange="previewImage(this)"
-                        class="form-control">
+                    <input type="file" id="placements.${placement}.image" name="placements[${placement}][image]" onchange="previewImage(this)"
+                        class="form-control image">
                     <small class="text-muted mt-2 d-block"></small>
                     <div class="invalid-feedback"></div>
                 </div>
@@ -118,7 +118,7 @@ function addMorePlacement(event) {
                 <img id="preview_image" style=" width:50px;height:50px;" accept="image/*"
                     src="${BASE_URL}/admin/assets/img/icons/empty-image.png" alt="preview_image">
                 <button type="button" class="btn btn-danger rounded-circle p-1"
-                    onclick="removePlacement(this)"><img
+                    onclick="removePlacement(this)" id="remove_placement_btn"><img
                         src="${BASE_URL}/admin/assets/img/icons/remove.png" alt=""
                         style="width:20px; height:20px;"></button>
             </div>
@@ -132,6 +132,7 @@ function removePlacement(ele) {
     $(ele).closest('#placement-group').remove();
 }
 
+
 function previewImage(ele) {
     const wrapper = $(ele).closest('#placement-group');
     const preview_image = wrapper.find('#preview_image');
@@ -144,14 +145,14 @@ function previewImage(ele) {
 }
 
 
-function validatePlacements() {
+function validateForm() {
     let isValid = true;
     let positionPagePairs = new Set();
 
-    const advertTittle = $('#advert_title');
-    const advertUrl = $('#advert_url');
-    const startDate = $('#startDate');
-    const endDate = $('#endDate');
+    const advertTittle = $('#title');
+    const advertUrl = $('#url');
+    const startDate = $('#start_date');
+    const endDate = $('#end_date');
 
     if (!advertTittle.val()) {
         advertTittle.addClass('is-invalid');
@@ -164,7 +165,7 @@ function validatePlacements() {
 
     if (!advertUrl.val()) {
         advertUrl.addClass('is-invalid');
-        advertUrl.next('.invalid-feedback').text('Advert description is required.');
+        advertUrl.next('.invalid-feedback').text('Advert url is required.');
         isValid = false;
     } else {
         advertUrl.removeClass('is-invalid');
@@ -195,7 +196,7 @@ function validatePlacements() {
     $('#placements #placement-group').each(function () {
         const positionSelect = $(this).find('.position-select');
         const pageSelect = $(this).find('.page-select');
-        const imageInput = $(this).find('#image');
+        const imageInput = $(this).find('.image');
         const position = positionSelect.val();
         const page = pageSelect.val();
         const imageFile = imageInput[0].files[0];
@@ -276,7 +277,7 @@ function validatePlacements() {
 function submitForm(event) {
     event.preventDefault();
 
-    if (!validatePlacements()) {
+    if (!validateForm()) {
         console.error('Validation failed.');
         return;
     }
@@ -296,41 +297,56 @@ function submitForm(event) {
         },
         beforeSend: function () {
             $('#submit').prop('disabled', true).text('Submitting...');
+            //? disable placement remove buttons
+            $('#remove_placement_btn').prop('disabled', true);
         },
         success: function (response) {
+            $('#remove_placement_btn').prop('disabled', true);
             console.log(response);
             // Handle success response
         },
         error: function (xhr, status, error) {
-            console.error(xhr.responseText);
-            // Handle error response
+            console.log(status);
+            console.log(xhr);
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+                $.each(errors, function (key, value) {
+                    const ele = $(`[id="${key}"]`);
+                    ele.addClass('is-invalid');
+                    ele.next('.invalid-feedback').text(value[0]);
+                });
+            } else if (status === 500) {
+                toastr.error('An error occured while creating advert');
+            }
+
+            $('#remove_placement_btn').prop('disabled', false);
         },
         complete: function () {
             $('#submit').prop('disabled', false).text('Submit');
         }
-    });
-}
 
+    })
+}
 
 
 $(document).ready(function () {
     // Initialize datetimepickers
-    $('#startDate').datetimepicker({
+    $('#start_date').datetimepicker({
         format: 'DD-MM-YYYY',
         useCurrent: false, // Important to prevent auto-selecting current date
         ignoreReadonly: true,
         minDate: moment(), // Disable previous days
     });
 
-    $('#endDate').datetimepicker({
+    $('#end_date').datetimepicker({
         format: 'DD-MM-YYYY',
         useCurrent: false,
         ignoreReadonly: true,
     });
 
     //? When start date is selected, update end date's minDate
-    $("#startDate").on("dp.change", function (e) {
-        $('#endDate')
+    $("#start_date").on("dp.change", function (e) {
+        $('#end_date')
             .prop('disabled', false)
             .val("")
             .data("DateTimePicker").minDate(e.date);

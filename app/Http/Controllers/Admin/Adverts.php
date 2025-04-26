@@ -27,6 +27,7 @@ class Adverts extends Controller
 
     public function store(StoreAdvertsRequest $request)
     {
+        dd($request->validated());
         try {
             DB::beginTransaction();
             $advert = Advert::create([

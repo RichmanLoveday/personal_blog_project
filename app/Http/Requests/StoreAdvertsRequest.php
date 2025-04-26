@@ -26,9 +26,9 @@ class StoreAdvertsRequest extends FormRequest
             'title' => 'required|string|max:255',
             'start_date' => 'required|date|date_format:Y-m-d H:i:s',
             'end_date' => 'required|date|date_format:Y-m-d H:i:s|after:start_date',
-            'url' => 'nullable|url',
+            'url' => 'required|url',
             'placements' => 'required|array|min:1',
-            'placecents.*image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'placements.*.image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
             'placements.*.position' => 'required|string|max:255',
             'placements.*.page' => 'required|string|max:255',
         ];
@@ -44,12 +44,12 @@ class StoreAdvertsRequest extends FormRequest
             'url.url' => 'Please enter a valid URL',
             'placements.required' => 'Please select at least one placement',
             'placements.array' => 'Invalid placements format',
-            'placements.*position.required' => 'Please select a position for each placement',
-            'placements.*page.required' => 'Please select a page for each placement',
-            'placecents.*.image.required' => 'Please upload an image for each placement',
-            'placecents.*.image.image' => 'The file must be an image',
-            'placecents.*.image.mimes' => 'The image must be a file of type: jpeg, png, jpg',
-            'placecents.*.image.max' => 'The image may not be greater than 2MB',
+            'placements.*.position.required' => 'Please select a position for each placement',
+            'placements.*.page.required' => 'Please select a page for each placement',
+            'placements.*.image.required' => 'Please upload an image for each placement',
+            'placements.*.image.image' => 'The file must be an image',
+            'placements.*.image.mimes' => 'The image must be a file of type: jpeg, png, jpg',
+            'placements.*.image.max' => 'The image may not be greater than 2MB',
         ];
     }
 

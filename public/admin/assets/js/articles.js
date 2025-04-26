@@ -574,7 +574,6 @@ function previewImage(ele) {
 }
 
 
-
 $(document).ready(function () {
     // Initialize datetimepickers
     $('#startDate').datetimepicker({

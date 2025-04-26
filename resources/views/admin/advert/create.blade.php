@@ -16,21 +16,21 @@
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label>Advert Title</label>
-                                <input type="text" id="advert_title" class="" name="title">
+                                <input type="text" id="title" class="" name="title">
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label>Advert Url</label>
-                                <input type="text" id="advert_url" class="" name="title">
+                                <input type="text" id="url" class="" name="url">
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label for="startDate">Start Date</label>
-                                <input id="startDate" oninput="determinEndDate(this)" type="text"
+                                <input id="start_date" oninput="determinEndDate(this)" type="text"
                                     value="{{ old('startDate', request('startDate')) }}" name="startDate"
                                     class="datetimepicker cal-icon" placeholder="Choose Start Date">
                                 <div class="invalid-feedback"></div>
@@ -40,7 +40,7 @@
                         <div class="col-lg-6 col-sm-6 col-12">
                             <div class="form-group">
                                 <label for="endDate">End Date</label>
-                                <input id="endDate" type="text" value="{{ old('endDate', request('endDate')) }}"
+                                <input id="end_date" type="text" value="{{ old('endDate', request('endDate')) }}"
                                     name="endDate" class="datetimepicker cal-icon" placeholder="Choose End Date">
                                 <div class="invalid-feedback"></div>
                             </div>
@@ -54,8 +54,8 @@
                             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="form-group">
                                     <label>Select Position</label>
-                                    <select onchange="getPagesForBanner(this)" class="form-select position-select"
-                                        name="placements[0][position]">
+                                    <select onchange="getPagesForBanner(this)" id="placements.0.position"
+                                        class="form-select position-select" name="placements[0][position]">
                                         <option value="">Choose Position</option>
                                         <option value="top_banner">Top Banner</option>
                                         <option value="footer_banner">Footer Banner</option>
@@ -69,7 +69,8 @@
                             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="form-group">
                                     <label>Select Page</label>
-                                    <select name="placements[0][page]" class="form-select page-select">
+                                    <select name="placements[0][page]" id="placements.0.page"
+                                        class="form-select page-select">
                                         <option value="">Choose Page</option>
                                     </select>
                                     <div class="invalid-feedback"></div>
@@ -79,10 +80,10 @@
                             <div class="col-lg-6 col-md-6 col-sm-12 col-12">
                                 <div class="form-group">
                                     <label>Add Placement Image</label>
-                                    <input type="file" id="image" name="placements[0][image]"
-                                        onchange="previewImage(this)" class="form-control">
-                                    <small class="text-muted mt-2 d-block"></small>
+                                    <input type="file" id="placements.0.image" name="placements[0][image]"
+                                        onchange="previewImage(this)" class="form-control image">
                                     <div class="invalid-feedback"></div>
+                                    <small class="text-muted mt-2 d-block"></small>
                                 </div>
                                 <img id="preview_image" style=" width:50px;height:50px;" accept="image/*"
                                     src="{{ asset('admin/assets/img/icons/empty-image.png') }}" alt="preview_image">
