@@ -130,7 +130,6 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::get('/admin/article/search', 'articleFilter')->name('admin.article.filter');
     });
 
-
     Route::controller(Adverts::class)->group(function () {
         Route::get('/admin/adverts', 'index')->name('admin.advert.index');
         Route::get('/admin/advert/add', 'create')->name('admin.advert.create');
@@ -139,6 +138,9 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::put('/admin/advert/update', 'update')->name('admin.advert.update');
         Route::put('/admin/advert/statusUpdate/{id}/{status}', 'statusUpdate')->name('admin.advert.status.update');
         Route::delete('/admin/advert/delete/{id}', 'delete')->name('admin.advert.delete');
+        Route::get('/admin/advert/edit/{id}', 'edit')->name('admin.advert.edit');
+        Route::delete('/admin/advert/placement/delete/{id}', 'deletePlacement')->name('admin.advert.placement.delete');
+        Route::put('/admin/advert/update', 'update')->name('admin.advert.update');
     });
 });
 

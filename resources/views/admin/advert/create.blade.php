@@ -31,7 +31,7 @@
                             <div class="form-group">
                                 <label for="startDate">Start Date</label>
                                 <input id="start_date" oninput="determinEndDate(this)" type="text"
-                                    value="{{ old('startDate', request('startDate')) }}" name="startDate"
+                                    value="{{ old('startDate', request('startDate')) }}" name="start_date"
                                     class="datetimepicker cal-icon" placeholder="Choose Start Date">
                                 <div class="invalid-feedback"></div>
                             </div>
@@ -41,7 +41,7 @@
                             <div class="form-group">
                                 <label for="endDate">End Date</label>
                                 <input id="end_date" type="text" value="{{ old('endDate', request('endDate')) }}"
-                                    name="endDate" class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                    name="end_date" class="datetimepicker cal-icon" placeholder="Choose End Date">
                                 <div class="invalid-feedback"></div>
                             </div>
                         </div>
@@ -99,7 +99,7 @@
                         </div>
                         <div class="col-lg-12">
                             <button type="submit" id="btn-submit" class="btn btn-submit me-2">Submit</button>
-                            <a href="{{ route('admin.articles') }}" class="btn btn-cancel">Cancel</a>
+                            <a href="{{ route('admin.advert.index') }}" class="btn btn-cancel">Cancel</a>
                         </div>
                     </div>
                 </form>

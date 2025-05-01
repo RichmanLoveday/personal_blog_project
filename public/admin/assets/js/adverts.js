@@ -15,7 +15,6 @@ function getPagesForBanner(ele) {
     const selectedPosition = $(ele).val();
     const selectImage = wrapper.find('.image');
 
-    console.log(selectImage)
 
     //? check if selectedPosition is empty and add default option
     if (!selectedPosition) {
@@ -44,27 +43,27 @@ function getPagesForBanner(ele) {
     // console.log(selectedPosition)
     if (selectedPosition == 'top_banner') {
         selectImage.attr('accept', 'image/png, image/jpeg, image/jpg, image/webp');
-        selectImage.next().text(`Image dimensions should be 690 x 85 pixels`);
+        selectImage.next().next().text(`Image dimensions should be 690 x 85 pixels`);
     }
 
     if (selectedPosition === 'footer_banner') {
         selectImage.attr('accept', 'image/png, image/jpeg, image/jpg, image/webp');
-        selectImage.next().text(`Image dimensions should be 210 x 268 px`);
+        selectImage.next().next().text(`Image dimensions should be 210 x 268 px`);
     }
 
     if (selectedPosition === 'whats_new_banner') {
         selectImage.attr('accept', 'image/png, image/jpeg, image/jpg, image/webp');
-        selectImage.next().text(`Image dimensions should be 610 x 90 px`);
+        selectImage.next().next().text(`Image dimensions should be 610 x 90 px`);
     }
 
     if (selectedPosition === 'most_popular_banner') {
         selectImage.attr('accept', 'image/png, image/jpeg, image/jpg, image/webp');
-        selectImage.next().text(`Image dimensions should be 210 x 282 px`);
+        selectImage.next().next().text(`Image dimensions should be 210 x 282 px`);
     }
 
     if (selectedPosition === 'featured_banner') {
         selectImage.attr('accept', 'image/png, image/jpeg, image/jpg, image/webp');
-        selectImage.next().text(`Image dimensions should be 770 x 124 px`);
+        selectImage.next().next().text(`Image dimensions should be 770 x 124 px`);
     }
 
     return;
@@ -109,8 +108,8 @@ function addMorePlacement(event) {
                     <label>Add Placement Image</label>
                     <input type="file" id="placements.${placement}.image" name="placements[${placement}][image]" onchange="previewImage(this)"
                         class="form-control image">
-                    <small class="text-muted mt-2 d-block"></small>
-                    <div class="invalid-feedback"></div>
+                         <div class="invalid-feedback"></div>
+                                    <small class="text-muted mt-2 d-block"></small>
                 </div>
             </div>
 
@@ -128,7 +127,45 @@ function addMorePlacement(event) {
 }
 
 
-function removePlacement(ele) {
+function removePlacement(ele, type = 'new') {
+    if (type === 'edit') {
+        const placementId = $(ele).data('placement-id');
+
+        //? remeve placement from db
+        $.ajax({
+            url: `${BASE_URL}/admin/advert/placement/delete/${placementId}`,
+            type: 'DELETE',
+            method: 'DELETE',
+            contentType: "application/json",
+            headers: {
+                "X-CSRF-TOKEN": csrf,
+                "Accept": "application/json",
+            },
+            beforeSend: function () {
+                $(ele).prop('disabled', true);
+            },
+            success: function (res) {
+                console.log(res);
+                if (res.status === 'success') {
+                    //? Show success message
+                    toastr.success(res.message);
+
+                    //? remove the placement group
+                    $(ele).closest('#placement-group').remove();
+                }
+            },
+            error: function (xhr) {
+                if (xhr.status === 500) {
+                    toastr.error('An error occurred while deleting placement');
+                    $(ele).prop('disabled', false);
+                }
+            }
+
+        })
+        return;
+    }
+
+    //? remove the placement group
     $(ele).closest('#placement-group').remove();
 }
 
@@ -145,9 +182,10 @@ function previewImage(ele) {
 }
 
 
-function validateForm() {
+async function validateForm(type = 'new') {
     let isValid = true;
     let positionPagePairs = new Set();
+    const dimensionChecks = [];
 
     const advertTittle = $('#title');
     const advertUrl = $('#url');
@@ -200,6 +238,7 @@ function validateForm() {
         const position = positionSelect.val();
         const page = pageSelect.val();
         const imageFile = imageInput[0].files[0];
+        const isNewPlacement = !$(this).data('placement-id'); // Check if it's a new placement
 
         //? Validate position
         if (!position) {
@@ -235,49 +274,58 @@ function validateForm() {
             }
         }
 
-        //? Validate image
-        if (!imageFile) {
-            isValid = false;
-            imageInput.addClass('is-invalid');
-            imageInput.next('.invalid-feedback').text('Advert image is required.');
-        } else {
-            const dimensions = {
-                top_banner: { width: 690, height: 85 },
-                footer_banner: { width: 210, height: 268 },
-                whats_new_banner: { width: 610, height: 90 },
-                most_popular_banner: { width: 210, height: 282 },
-                featured_banner: { width: 770, height: 124 },
-            };
-
-            const requiredDimensions = dimensions[position];
-            if (requiredDimensions) {
-
-                const img = new Image();
-                img.onload = function () {
-                    if (this.width !== requiredDimensions.width || this.height !== requiredDimensions.height) {
-                        isValid = false;
-
-                        imageInput.addClass('is-invalid');
-                        imageInput.next().next().text(
-                            `Image dimensions must be ${requiredDimensions.width} x ${requiredDimensions.height} pixels, but you provided ${this.width} x ${this.height} pixels.`
-                        );
-                    } else {
-                        imageInput.removeClass('is-invalid').next().next().removeClass('is-invalid');
-                        imageInput.next().next().text('');
-                    }
+        //? Validate image for new placements or when editing an existing placement with a new image
+        if (isNewPlacement || imageFile) {
+            if (!imageFile) {
+                isValid = false;
+                imageInput.addClass('is-invalid');
+                imageInput.next('.invalid-feedback').text('Advert image is required.');
+            } else {
+                const dimensions = {
+                    top_banner: { width: 690, height: 85 },
+                    footer_banner: { width: 210, height: 268 },
+                    whats_new_banner: { width: 610, height: 90 },
+                    most_popular_banner: { width: 210, height: 282 },
+                    featured_banner: { width: 770, height: 124 },
                 };
-                img.src = URL.createObjectURL(imageFile);
+
+                const requiredDimensions = dimensions[position];
+                if (requiredDimensions) {
+                    const p = new Promise((resolve) => {
+                        const img = new Image();
+                        img.onload = function () {
+                            if (this.width !== requiredDimensions.width || this.height !== requiredDimensions.height) {
+                                isValid = false;
+
+                                imageInput.addClass('is-invalid');
+                                imageInput.next().next().text(
+                                    `Image dimensions must be ${requiredDimensions.width} x ${requiredDimensions.height} pixels, but you provided ${this.width} x ${this.height} pixels.`
+                                );
+                            } else {
+                                imageInput.removeClass('is-invalid').next().next().removeClass('is-invalid');
+                                imageInput.next().next().text('');
+                            }
+
+                            //? resolve the promise to continue the loop
+                            resolve();
+                        };
+                        img.src = URL.createObjectURL(imageFile);
+                    });
+                    dimensionChecks.push(p);
+                }
             }
         }
     });
 
+    // WAIT for *all* of the onload handlers before returning
+    await Promise.all(dimensionChecks);
     return isValid;
 }
 
-function submitForm(event) {
+async function submitForm(event) {
     event.preventDefault();
 
-    if (!validateForm()) {
+    if (! await validateForm()) {
         console.error('Validation failed.');
         return;
     }
@@ -297,13 +345,16 @@ function submitForm(event) {
         },
         beforeSend: function () {
             $('#submit').prop('disabled', true).text('Submitting...');
-            //? disable placement remove buttons
-            $('#remove_placement_btn').prop('disabled', true);
+            $('#btn-submit').prop('disabled', true);
+            //? disable cloz
         },
         success: function (response) {
-            $('#remove_placement_btn').prop('disabled', true);
-            console.log(response);
-            // Handle success response
+            if (response.status === 'success') {
+                window.location.href = response.redirect_url;
+            } else if (response.status === 'error') {
+                toastr.error('An error occurred while creating advert!');
+                $('#btn-submit').prop('disabled', false);
+            }
         },
         error: function (xhr, status, error) {
             console.log(status);
@@ -319,15 +370,77 @@ function submitForm(event) {
                 toastr.error('An error occured while creating advert');
             }
 
-            $('#remove_placement_btn').prop('disabled', false);
+            //? undisable button
+            $('#btn-submit').prop('disabled', false);
         },
         complete: function () {
             $('#submit').prop('disabled', false).text('Submit');
+            //? undisable button
+            $('#btn-submit').prop('disabled', false);
         }
 
     })
 }
 
+async function updateAdvert(event) {
+    event.preventDefault();
+
+    if (! await validateForm('edit')) {
+        console.error('Validation failed.');
+        return;
+    }
+
+    let form = $('#advertForm')[0];
+    let formData = new FormData(form);
+
+    $.ajax({
+        url: form.action,
+        type: "POST",
+        data: formData,
+        processData: false,
+        contentType: false,
+        headers: {
+            "X-CSRF-TOKEN": csrf,
+            "Accept": "application/json",
+        },
+        beforeSend: function () {
+            $('#submit').prop('disabled', true).text('Submitting...');
+            $('#btn-submit').prop('disabled', true);
+            //? disable cloz
+        },
+        success: function (response) {
+            if (response.status === 'success') {
+                window.location.href = response.redirect_url;
+            } else if (response.status === 'error') {
+                toastr.error('An error occurred while creating advert!');
+                $('#btn-submit').prop('disabled', false);
+            }
+        },
+        error: function (xhr, status, error) {
+            console.log(status);
+            console.log(xhr);
+            if (xhr.status === 422) {
+                const errors = xhr.responseJSON.errors;
+                $.each(errors, function (key, value) {
+                    const ele = $(`[id="${key}"]`);
+                    ele.addClass('is-invalid');
+                    ele.next('.invalid-feedback').text(value[0]);
+                });
+            } else if (status === 500) {
+                toastr.error('An error occured while creating advert');
+            }
+
+            //? undisable button
+            $('#btn-submit').prop('disabled', false);
+        },
+        complete: function () {
+            $('#submit').prop('disabled', false).text('Submit');
+            //? undisable button
+            $('#btn-submit').prop('disabled', false);
+        }
+
+    })
+}
 
 $(document).ready(function () {
     // Initialize datetimepickers
@@ -335,7 +448,7 @@ $(document).ready(function () {
         format: 'DD-MM-YYYY',
         useCurrent: false, // Important to prevent auto-selecting current date
         ignoreReadonly: true,
-        minDate: moment(), // Disable previous days
+        minDate: $('#start_date').val() ? moment($('#start_date').val(), 'DD-MM-YYYY') : moment(), // Set minDate based on existing value or current date
     });
 
     $('#end_date').datetimepicker({
@@ -351,4 +464,39 @@ $(document).ready(function () {
             .val("")
             .data("DateTimePicker").minDate(e.date);
     });
+
+    //? loop through all the placement groups and add event listener to each select element
+    $('#placements #placement-group').each(function () {
+        const positionSelect = $(this).find('.position-select');
+        const pageSelect = $(this).find('.page-select');
+
+        //? select page when position is selected
+        selectPageWhenPageLoads(positionSelect, pageSelect);
+    });
 });
+
+
+function selectPageWhenPageLoads(positionEle, pageEle) {
+
+    //? check if selectedPosition is empty and add default option
+    if (!positionEle) {
+        pageEle.empty();
+        pageEle.html('<option value="">Choose Page</option>');
+        return;
+    }
+
+    //? search fror page based on selceted banner
+    let selectedPagesValues = pages[positionEle.val()];
+
+    //? update field based on selected banner
+    let pageValues = `<option value="">Choose Page</option>`;
+    $.each(selectedPagesValues, function (_, val) {
+        console.log(val, pageEle.val())
+        const isSelected = pageEle.val() === val ? 'selected' : '';
+        pageValues += ` <option value="${val}" ${isSelected}>${val.charAt(0).toUpperCase() + val.slice(1)}</option>`;
+    });
+
+    //? clear page select
+    pageEle.empty();
+    pageEle.append(pageValues);
+}

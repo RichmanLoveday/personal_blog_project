@@ -24,11 +24,11 @@ class StoreAdvertsRequest extends FormRequest
     {
         return [
             'title' => 'required|string|max:255',
-            'start_date' => 'required|date|date_format:Y-m-d H:i:s',
-            'end_date' => 'required|date|date_format:Y-m-d H:i:s|after:start_date',
+            'start_date' => 'required|date|date_format:d-m-Y',
+            'end_date' => 'required|date|date_format:d-m-Y|after:start_date',
             'url' => 'required|url',
             'placements' => 'required|array|min:1',
-            'placements.*.image' => 'required|image|mimes:jpeg,png,jpg|max:2048',
+            'placements.*.image' => 'required_without:placements.*.id|nullable|image|mimes:jpeg,png,jpg|max:5000',
             'placements.*.position' => 'required|string|max:255',
             'placements.*.page' => 'required|string|max:255',
         ];
@@ -62,13 +62,21 @@ class StoreAdvertsRequest extends FormRequest
 
                 foreach ($this->placements as $index => $placement) {
                     //? call checkIfPositionAndPagesCombinationExist for each placement
-                    if (!isset($placement['position']) || !isset($placement['page'])) continue;
+                    if (!isset($placement['position']) || !isset($placement['page']))
+                        continue;
 
+                    //? if id was given, check if the combination exist in the advertPlacement table
+                    if ($this->checkIfCombinationExistForGivenId($placement['id'] ?? null, $placement['position'], $placement['page'])) {
+                        //? if true, continue to next iteration
+                        continue;
+                    }
+
+                    //? if not, check if the combination exist in the advertPlacement table
                     if ($this->checkIfPositionAndPagesCombinationExist($placement['position'], $placement['page'])) {
                         //? if true, add error to validator
                         $validator->errors()->add(
-                            'placements.',
-                            'Adverts name already exist, please change'
+                            "placements.{$index}.page",
+                            'This combination of position and page already exists for another advert.'
                         );
                     }
                 }
@@ -77,14 +85,52 @@ class StoreAdvertsRequest extends FormRequest
     }
 
 
+    /**
+     * Check if a combination of position and page exists in the AdvertPlacement table.
+     *
+     * This method checks whether a specific combination of `position` and `page`
+     * exists in the `AdvertPlacement` model. It is used to ensure that no duplicate
+     * combinations are created for advert placements.
+     *
+     * @param string $position The position to check for.
+     * @param string $page The page to check for.
+     * @return bool True if the combination exists, false otherwise.
+     */
     public function checkIfPositionAndPagesCombinationExist(string $position, string $page): bool
     {
-        //? check combination on advertPlacement table
+        // Check combination in the AdvertPlacement table
         $placementCombination = AdvertPlacement::where('position', $position)
             ->where('page', $page)
             ->exists();
 
         if ($placementCombination) return true;
+
+        return false;
+    }
+
+
+    /**
+     * Check if a combination of position and page exists for a given AdvertPlacement ID.
+     *
+     * This method verifies whether a specific combination of `position` and `page`
+     * exists in the `AdvertPlacement` model for the provided ID. If the ID is not
+     * provided (null), the method will return false.
+     *
+     * @param int|null $id The ID of the AdvertPlacement to check (nullable).
+     * @param string $position The position to check for.
+     * @param string $page The page to check for.
+     * @return bool True if the combination exists for the given ID, false otherwise.
+     */
+    public function checkIfCombinationExistForGivenId(?int $id, string $position, string $page): bool
+    {
+        if (isset($id)) {
+            $placementCombination = AdvertPlacement::where('id', $id)
+                ->where('position', $position)
+                ->where('page', $page)
+                ->exists();
+
+            if ($placementCombination) return true;
+        }
 
         return false;
     }

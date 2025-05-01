@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class AdvertPlacement extends Model
 {
+    protected $guarded = [];
     protected $table = 'advert_placements';
-
 
     public function advert(): BelongsTo
     {

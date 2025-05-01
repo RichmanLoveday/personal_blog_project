@@ -4,8 +4,10 @@ namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAdvertsRequest;
+use App\Http\Requests\StoreUpdateAdvertsRequest;
 use App\Models\Advert;
 use App\Models\AdvertPlacement;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -16,7 +18,15 @@ class Adverts extends Controller
 {
     public function index()
     {
-        return view('admin.advert.index');
+        //? get all adverts created
+        $adverts = Advert::with(['user', 'placements'])
+            ->latest()
+            ->paginate(10)
+            ->appends(request()->query());
+
+        // dd($adverts);
+
+        return view('admin.advert.index', compact('adverts'));
     }
 
     public function create()
@@ -24,18 +34,18 @@ class Adverts extends Controller
         return view('admin.advert.create');
     }
 
-
     public function store(StoreAdvertsRequest $request)
     {
-        dd($request->validated());
+        //  dd($request->validated());
         try {
             DB::beginTransaction();
             $advert = Advert::create([
                 'user_id' => Auth::user()->id,
                 'title' => $request->title,
                 'url' => $request->url,
-                'startDate' => $request->startDate,
-                'endDate' => $request->endDate,
+                'start_date' => Carbon::createFromFormat('d-m-Y', $request->start_date)->format('Y-m-d'),
+                'end_date' => Carbon::createFromFormat('d-m-Y', $request->end_date)->format('Y-m-d'),
+                'status' => 'active',
             ]);
 
             $placementsDatas = [];
@@ -59,8 +69,16 @@ class Adverts extends Controller
             $advert->placements()->saveMany($placementsDatas);
 
             DB::commit();
+            //? redirect to index page with success message
+            session()->flash('success', 'Advert created successfully!');
+
+            //? return json response
             return response()->json(
-                ['success' => 'Advert created successfully!'],
+                [
+                    'status' => 'success',
+                    'success' => 'Advert created successfully!',
+                    'redirect_url' => route('admin.advert.index'),
+                ],
                 200
             );
         } catch (\Exception $e) {
@@ -72,7 +90,104 @@ class Adverts extends Controller
         }
     }
 
-    public function edit($id) {}
+    public function edit(int $id)
+    {
+        //? find advert by id
+        $advert = Advert::with(['user', 'placements'])->findOrFail($id);
+        // dd($advert->toArray());
+
+        //? return view with advert data
+        return view('admin.advert.edit', compact('advert'));
+    }
+
+    public function update(StoreAdvertsRequest $request)
+    {
+        // dd($request->all());
+        try {
+            DB::beginTransaction();
+
+            //? find advert by id
+            $advert = Advert::findOrFail($request->id);
+
+            //? update advert data
+            $advert->update([
+                'title' => $request->title,
+                'url' => $request->url,
+                'start_date' => Carbon::createFromFormat('d-m-Y', $request->start_date)->format('Y-m-d'),
+                'end_date' => Carbon::createFromFormat('d-m-Y', $request->end_date)->format('Y-m-d'),
+                'status' => 'active',
+                'updated_at' => now(),
+            ]);
+
+            //? loop through placements
+            foreach ($request->placements as $placement) {
+                if (isset($placement['id'])) {
+                    //? update existing placement
+                    $existingPlacement = AdvertPlacement::findOrFail($placement['id']);
+
+                    //? if image is set, delete the old image and upload new one
+                    if (isset($placement['image'])) {
+                        $placement['image'] = $this->uploadImage($placement, $existingPlacement->id);
+                    }
+
+                    //? update placement data
+                    $existingPlacement->update([
+                        'position' => $placement['position'],
+                        'page' => $placement['page'],
+                        'image' => $placement['image'] ?? $existingPlacement->image,
+                    ]);
+                } else {
+                    //? create new placement
+                    $imagePath = $this->uploadImage($placement);
+                    AdvertPlacement::create([
+                        'advert_id' => $advert->id,
+                        'position' => $placement['position'],
+                        'page' => $placement['page'],
+                        'image' => $imagePath,
+                    ]);
+                }
+            }
+
+            DB::commit();
+            session()->flash('success', 'Advert updated successfully!');
+
+            return response()->json(
+                [
+                    'status' => 'success',
+                    'success' => 'Advert updated successfully!',
+                    'redirect_url' => route('admin.advert.index'),
+                ],
+                200
+            );
+        } catch (\Exception $e) {
+            return response()->json(
+                ['error' => 'Error updating advert: ' . $e->getMessage()],
+                500
+            );
+        }
+    }
+
+    public function deletePlacement(int $id)
+    {
+        // dd($id);
+        //? delete advert placement
+        try {
+            //? find placement by id or fail
+            $placement = AdvertPlacement::findOrFail($id);
+
+            //? delete image from public/uploads/advert_images
+            if ($placement->image) {
+                File::delete(public_path($placement->image));
+            }
+
+            //? delete placement from database
+            $placement->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Placement deleted successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Error deleting placement: ' . $e->getMessage()], 500);
+        }
+    }
 
 
     private function uploadImage(array $placement, string|int|null $advertPlacmentId = null): string
@@ -85,8 +200,8 @@ class Adverts extends Controller
                 File::makeDirectory($directory, 0755, true);
             }
 
-            //? If an article ID is provided, delete the existing image
-            if (!is_null($advertPlacmentId)) {
+            //? if advert placement id not null and image is set, delete the old image
+            if (!is_null($advertPlacmentId) && isset($placement['image'])) {
                 $advertPlacement = AdvertPlacement::find($advertPlacmentId);
                 if ($advertPlacement && $advertPlacement->image) {
                     File::delete(public_path($advertPlacement->image));

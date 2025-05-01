@@ -55,110 +55,104 @@
                                 <th>Ads Url</th>
                                 <th>Status</th>
                                 <th>Created By</th>
-                                <th>Date Created</th>
+                                <th>Starting Date</th>
+                                <th>Expiring Date</th>
                                 <th>Action</th>
                             </tr>
                         </thead>
                         <tbody>
-                            <tr>
-                                <td>1</td>
-                                <td>Pitt</td>
-                                <td><a href="www.google.com">Google</a></td>
-                                <td><span class="badges bg-lightgreen">Active</span></td>
-                                <td>Admin</td>
-                                <td>10th Jan, 2025</td>
-                                <td class="text-center">
-                                    <a class="action-set" href="javascript:void(0);" data-bs-toggle="dropdown"
-                                        aria-expanded="true">
-                                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="edit-sales.html" class="dropdown-item"><img
-                                                    src="{{ asset('admin/assets/img/icons/edit.svg') }}" class="me-2"
-                                                    alt="img">Edit
-                                                Advert</a>
-                                        </li>
-                                        <li>
-                                            <a href="sales-details.html" class="dropdown-item"><img
-                                                    src="{{ asset('admin/assets/img/icons/eye1.svg') }}" class="me-2"
-                                                    alt="img">Activate Advert</a>
-                                        </li>
-                                        <li>
-                                            <a href="sales-details.html" class="dropdown-item"><img
-                                                    src="{{ asset('admin/assets/img/icons/eye1.svg') }}" class="me-2"
-                                                    alt="img">Deactivate Advert</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);" class="dropdown-item confirm-text"><img
-                                                    src="{{ asset('admin/assets/img/icons/delete1.svg') }}" class="me-2"
-                                                    alt="img">Delete
-                                                Advert</a>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
-                            <tr>
-                                <td>1</td>
-                                <td>Pitt</td>
-                                <td><a href="www.google.com">Google</a></td>
-                                <td><span class="badges bg-lightgreen">Active</span></td>
-                                <td>Admin</td>
-                                <td>10th Jan, 2025</td>
-                                <td class="text-center">
-                                    <a class="action-set" href="javascript:void(0);" data-bs-toggle="dropdown"
-                                        aria-expanded="true">
-                                        <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
-                                    </a>
-                                    <ul class="dropdown-menu">
-                                        <li>
-                                            <a href="edit-sales.html" class="dropdown-item"><img
-                                                    src="{{ asset('admin/assets/img/icons/edit.svg') }}" class="me-2"
-                                                    alt="img">Edit
-                                                Advert</a>
-                                        </li>
-                                        <li>
-                                            <a href="sales-details.html" class="dropdown-item"><img
-                                                    src="{{ asset('admin/assets/img/icons/eye1.svg') }}" class="me-2"
-                                                    alt="img">Activate Advert</a>
-                                        </li>
-                                        <li>
-                                            <a href="sales-details.html" class="dropdown-item"><img
-                                                    src="{{ asset('admin/assets/img/icons/eye1.svg') }}" class="me-2"
-                                                    alt="img">Deactivate Advert</a>
-                                        </li>
-                                        <li>
-                                            <a href="javascript:void(0);" class="dropdown-item confirm-text"><img
-                                                    src="{{ asset('admin/assets/img/icons/delete1.svg') }}" class="me-2"
-                                                    alt="img">Delete
-                                                Advert</a>
-                                        </li>
-                                    </ul>
-                                </td>
-                            </tr>
+                            @isset($adverts)
+                                @foreach ($adverts as $advert)
+                                    <tr>
+                                        <td>{{ $adverts->firstItem() + $loop->index }}</td>
+                                        <td>{{ $advert->title }}</td>
+                                        <td><a href="{{ $advert->url }}"
+                                                target="_blank">{{ Str::limit($advert->url, 50, '...') }}</a></td>
+                                        <td><span
+                                                class="badge {{ $advert->status == 'active' ? 'bg-success' : 'bg-secondary' }}">{{ ucfirst($advert->status) }}</span>
+                                        </td>
+                                        <td>{{ Str::ucfirst($advert->user->firstName) . ' ' . Str::ucfirst($advert->user->lastName) }}
+                                        </td>
+                                        <td>{{ date('jS M, Y', strtotime($advert->start_date)) }}</td>
+                                        <td>{{ date('jS M, Y', strtotime($advert->end_date)) }}</td>
+                                        <td class="text-center">
+                                            <a class="action-set" href="javascript:void(0);" data-bs-toggle="dropdown"
+                                                aria-expanded="true">
+                                                <i class="fa fa-ellipsis-v" aria-hidden="true"></i>
+                                            </a>
+                                            <ul class="dropdown-menu">
+                                                <li>
+                                                    <a href="{{ route('admin.advert.edit', $advert->id) }}"
+                                                        class="dropdown-item"><img
+                                                            src="{{ asset('admin/assets/img/icons/edit.svg') }}" class="me-2"
+                                                            alt="img">Edit
+                                                        Advert</a>
+                                                </li>
+                                                <li>
+                                                    <a href="edit-sales.html" class="dropdown-item"><img
+                                                            src="{{ asset('admin/assets/img/icons/edit.svg') }}" class="me-2"
+                                                            alt="img">View Placements</a>
+                                                </li>
+                                                @if ($advert->status == 'active')
+                                                    <li>
+                                                        <a href="sales-details.html" class="dropdown-item"><img
+                                                                src="{{ asset('admin/assets/img/icons/eye1.svg') }}"
+                                                                class="me-2" alt="img">Deactivate Advert</a>
+                                                    </li>
+                                                @else
+                                                    <li>
+                                                        <a href="sales-details.html" class="dropdown-item"><img
+                                                                src="{{ asset('admin/assets/img/icons/eye1.svg') }}"
+                                                                class="me-2" alt="img">Activate Advert</a>
+                                                    </li>
+                                                @endif
+
+                                                <li>
+                                                    <a href="javascript:void(0);" class="dropdown-item confirm-text"><img
+                                                            src="{{ asset('admin/assets/img/icons/delete1.svg') }}"
+                                                            class="me-2" alt="img">Delete
+                                                        Advert</a>
+                                                </li>
+                                            </ul>
+                                        </td>
+                                    </tr>
+                                @endforeach
+                            @endisset
                         </tbody>
+                        <tfoot>
+                            <tr>
+                                <th>#</th>
+                                <th>Title</th>
+                                <th>Ads Url</th>
+                                <th>Status</th>
+                                <th>Created By</th>
+                                <th>Starting Date</th>
+                                <th>Expiring Date</th>
+                                <th>Action</th>
+                            </tr>
+                        </tfoot>
                     </table>
                 </div>
             </div>
         </div>
 
-        <div class="w-100 d-flex justify-content-center">
-            <ul class="pagination">
-                <li class="page-item disabled">
-                    <a class="page-link" href="javascript:void(0);" aria-label="Previous">
-                        <span aria-hidden="true">«</span>
-                        <span class="sr-only">Previous</span>
-                    </a>
-                </li>
-                <li class="page-item"><a class="page-link" href="javascript:void(0);">1</a></li>
-                <li class="page-item"><a class="page-link" href="javascript:void(0);">2</a></li>
-                <li class="page-item"><a class="page-link" href="javascript:void(0);">3</a></li>
-                <li class="page-item">
-                    <a class="page-link" href="javascript:void(0);" aria-label="Next">
-                        <span aria-hidden="true">»</span>
-                        <span class="sr-only">Next</span>
-                    </a>
-                </li>
-            </ul>
-        </div>
+        {{ $adverts->onEachSide(1)->links('vendor.pagination.admin-panel-pagination') }}
+        @if (session('success'))
+            <script>
+                $(document).ready(function() {
+                    toastr.success("{{ session('success') }}");
+                });
+            </script>
+        @endif
+
+
+        @if (session('error'))
+            <script>
+                $(document).ready(function() {
+                    toastr.error("{{ session('error') }}");
+                });
+            </script>
+        @endif
+
+        <script src="{{ asset('admin/assets/js/adverts.js') }}"></script>
     @endsection
