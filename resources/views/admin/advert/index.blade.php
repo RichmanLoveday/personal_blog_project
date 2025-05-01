@@ -16,34 +16,41 @@
             <div class="card-body">
                 <div class="car" id="">
                     <div class="card-body pb-0">
-                        <div class="row">
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose Start Date">
+                        <form action="{{ route('admin.advert.filter') }}" method="GET">
+                            <div class="row">
+                                <div class="col-lg col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <input id="start_date" oninput="determinEndDate(this)" type="text"
+                                            value="{{ old('start_date', request('start_date')) }}" name="start_date"
+                                            class="datetimepicker cal-icon" placeholder="Choose Start Date">
+                                    </div>
                                 </div>
-                            </div>
 
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <input type="text" class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                <div class="col-lg col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <input id="end_date" type="text" @disabled(!request('end_date'))
+                                            value="{{ old('end_date', request('end_date')) }}" name="end_date"
+                                            class="datetimepicker cal-icon" placeholder="Choose End Date">
+                                    </div>
+                                </div>
+                                <div class="col-lg col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <select class="select" name="status">
+                                            <option value="">Choose Status</option>
+                                            <option value="active">Active</option>
+                                            <option value="in-active">Inactive</option>
+                                        </select>
+                                    </div>
+                                </div>
+                                <div class="col-lg-1 col-sm-6 col-12">
+                                    <div class="form-group">
+                                        <button type="submit" class="btn btn-filters ms-auto"><img
+                                                src="{{ asset('admin/assets/img/icons/search-whites.svg') }}"
+                                                alt="img"></button>
+                                    </div>
                                 </div>
                             </div>
-                            <div class="col-lg col-sm-6 col-12">
-                                <div class="form-group">
-                                    <select class="select">
-                                        <option>Choose Status</option>
-                                        <option>Active</option>
-                                        <option>Inactive</option>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="col-lg-1 col-sm-6 col-12">
-                                <div class="form-group">
-                                    <a class="btn btn-filters ms-auto"><img src="assets/img/icons/search-whites.svg"
-                                            alt="img"></a>
-                                </div>
-                            </div>
-                        </div>
+                        </form>
                     </div>
                 </div>
                 <div class="table-responsive">
@@ -69,7 +76,7 @@
                                         <td><a href="{{ $advert->url }}"
                                                 target="_blank">{{ Str::limit($advert->url, 50, '...') }}</a></td>
                                         <td><span
-                                                class="badge {{ $advert->status == 'active' ? 'bg-success' : 'bg-secondary' }}">{{ ucfirst($advert->status) }}</span>
+                                                class="badge status {{ $advert->status == 'active' ? 'bg-success' : 'bg-danger' }}">{{ ucfirst($advert->status) }}</span>
                                         </td>
                                         <td>{{ Str::ucfirst($advert->user->firstName) . ' ' . Str::ucfirst($advert->user->lastName) }}
                                         </td>
@@ -95,23 +102,28 @@
                                                 </li>
                                                 @if ($advert->status == 'active')
                                                     <li>
-                                                        <a href="sales-details.html" class="dropdown-item"><img
+                                                        <button
+                                                            onclick="updateStatus(this, '{{ $advert->id }}', 'in-active')"
+                                                            class="dropdown-item"><img
                                                                 src="{{ asset('admin/assets/img/icons/eye1.svg') }}"
-                                                                class="me-2" alt="img">Deactivate Advert</a>
+                                                                class="me-2 status-btn" alt="img">Deactivate
+                                                            Advert</button>
                                                     </li>
                                                 @else
                                                     <li>
-                                                        <a href="sales-details.html" class="dropdown-item"><img
+                                                        <button onclick="updateStatus(this, '{{ $advert->id }}', 'active')"
+                                                            class="dropdown-item"><img
                                                                 src="{{ asset('admin/assets/img/icons/eye1.svg') }}"
-                                                                class="me-2" alt="img">Activate Advert</a>
+                                                                class="me-2 status-btn" alt="img">Activate Advert</button>
                                                     </li>
                                                 @endif
 
                                                 <li>
-                                                    <a href="javascript:void(0);" class="dropdown-item confirm-text"><img
+                                                    <button class="dropdown-item"
+                                                        onclick="deleteAdvert(this, '{{ $advert->id }}')"><img
                                                             src="{{ asset('admin/assets/img/icons/delete1.svg') }}"
                                                             class="me-2" alt="img">Delete
-                                                        Advert</a>
+                                                        Advert</button>
                                                 </li>
                                             </ul>
                                         </td>

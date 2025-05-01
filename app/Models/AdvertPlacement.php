@@ -14,4 +14,10 @@ class AdvertPlacement extends Model
     {
         return $this->belongsTo(Advert::class, 'advert_id', 'id');
     }
+
+    public function scopeTopOrFooter($query)
+    {
+        return $query->where('position', 'top_banner')
+            ->orWhere('position', 'footer_banner');
+    }
 }

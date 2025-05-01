@@ -102,8 +102,8 @@ class Adverts extends Controller
 
     public function update(StoreAdvertsRequest $request)
     {
-        // dd($request->all());
         try {
+            //? begin transaction
             DB::beginTransaction();
 
             //? find advert by id
@@ -115,7 +115,6 @@ class Adverts extends Controller
                 'url' => $request->url,
                 'start_date' => Carbon::createFromFormat('d-m-Y', $request->start_date)->format('Y-m-d'),
                 'end_date' => Carbon::createFromFormat('d-m-Y', $request->end_date)->format('Y-m-d'),
-                'status' => 'active',
                 'updated_at' => now(),
             ]);
 
@@ -148,6 +147,7 @@ class Adverts extends Controller
                 }
             }
 
+            //? commit the transaction
             DB::commit();
             session()->flash('success', 'Advert updated successfully!');
 
@@ -160,10 +160,37 @@ class Adverts extends Controller
                 200
             );
         } catch (\Exception $e) {
+            DB::rollBack();
             return response()->json(
                 ['error' => 'Error updating advert: ' . $e->getMessage()],
                 500
             );
+        }
+    }
+
+
+    public function updateStatus(Request $request)
+    {
+        //dd($request->all());
+        //? update advert status
+        try {
+            //? validate request
+            $request->validate([
+                'id' => 'required|integer|exists:adverts,id',
+                'status' => 'required|string|in:active,in-active',
+            ]);
+
+            //? find advert by id or fail
+            $advert = Advert::findOrFail($request->id);
+
+            //? update status
+            $advert->update([
+                'status' => $request->status,
+            ]);
+
+            return response()->json(['status' => 'success', 'message' => 'Advert status updated successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Error updating advert status: ' . $e->getMessage()], 500);
         }
     }
 
@@ -188,6 +215,70 @@ class Adverts extends Controller
             return response()->json(['status' => 'error', 'message' => 'Error deleting placement: ' . $e->getMessage()], 500);
         }
     }
+
+
+    public function delete(int $id)
+    {
+        //? delete advert
+        try {
+            //? find advert by id or fail
+            $advert = Advert::findOrFail($id);
+
+            foreach ($advert->placements as $placement) {
+                //? delete image from public/uploads/advert_images
+                if ($placement->image) {
+                    File::delete(public_path($placement->image));
+                }
+            }
+
+            //? delete advert from database and its placements through foreign key constraint
+            $advert->delete();
+
+            return response()->json(['status' => 'success', 'message' => 'Advert deleted successfully!']);
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Error deleting advert: ' . $e->getMessage()], 500);
+        }
+    }
+
+
+    public function advertFilter(Request $request)
+    {
+        try {
+            //? validate request
+            $request->validate([
+                'status' => 'nullable|string|in:active,in-active',
+                'start_date' => 'nullable|date_format:d-m-Y',
+                'end_date' => 'nullable|date_format:d-m-Y',
+            ]);
+
+            //? build query
+            $query = Advert::query();
+
+            if ($request->has('status') && $request->status) {
+                $query->where('status', $request->status);
+            }
+
+            if ($request->has('start_date') && $request->start_date) {
+                $query->whereDate('start_date', '>=', Carbon::createFromFormat('d-m-Y', $request->start_date)->format('Y-m-d'));
+            }
+
+            if ($request->has('end_date') && $request->end_date) {
+                $query->whereDate('end_date', '<=', Carbon::createFromFormat('d-m-Y', $request->end_date)->format('Y-m-d'));
+            }
+
+            //? get filtered adverts
+            $adverts = $query->with(['user', 'placements'])
+                ->latest()
+                ->paginate(10)
+                ->appends($request->query());
+
+
+            return view('admin.advert.index', compact('adverts'));
+        } catch (\Exception $e) {
+            return response()->json(['status' => 'error', 'message' => 'Error filtering adverts: ' . $e->getMessage()], 500);
+        }
+    }
+
 
 
     private function uploadImage(array $placement, string|int|null $advertPlacmentId = null): string

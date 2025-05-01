@@ -158,26 +158,20 @@
                             </ul>
                         </li>
 
-                        <li class="submenu">
-                            <a href="javascript:void(0);"><img src="{{ asset('admin/assets/img/icons/advert.png') }}"
-                                    alt="img"><span> Advert Management</span> <span
-                                    class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a href="{{ route('admin.advert.index') }}">All Adverts </a></li>
-                                <li><a href="newuser.html">Active Adverts </a></li>
-                                <li><a href="userlists.html">Inactive Adverts</a></li>
-                            </ul>
+                        <li>
+                            <a href="{{ route('admin.advert.index') }}">
+                                <img src="{{ asset('admin/assets/img/icons/advert.png') }}" alt="img">
+                                <span> Advert Management</span>
+                                <span></span>
+                            </a>
                         </li>
 
-                        <li class="submenu">
-                            <a href="#"><img src="{{ asset('admin/assets/img/icons/author.png') }}"
-                                    alt="img"><span>
-                                    Author Management</span> <span class="menu-arrow"></span></a>
-                            <ul>
-                                <li><a href="{{ route('admin.all.author') }}">All Authors </a></li>
-                                <li><a href="newuser.html">Active Authors </a></li>
-                                <li><a href="userlists.html">Inactive Authors</a></li>
-                            </ul>
+                        <li>
+                            <a href="{{ route('admin.all.author') }}"><img
+                                    src="{{ asset('admin/assets/img/icons/author.png') }}" alt="img">
+                                <span>Author Management</span>
+                                <span></span>
+                            </a>
                         </li>
 
                         <li class="">

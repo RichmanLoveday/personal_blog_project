@@ -85,7 +85,29 @@
                             </div>
                             <div class="col-xl-9 col-lg-9 col-md-9">
                                 <div class="header-banner f-right ">
-                                    <img src="{{ asset('assets/img/gallery/header_card.png') }}" alt="">
+
+                                    @php
+                                        $foundAdvert = false;
+                                    @endphp
+                                    @foreach ($adverts as $advert)
+                                        @foreach ($advert->placements as $placement)
+                                            @if ($placement->page === $currentPage && $placement->position === 'top_banner' && $advert->status === 'active')
+                                                <a href="{{ $advert->url }}" target="_blank">
+                                                    <img style="object-fit:cover; opacity:0.7;"
+                                                        src="{{ asset($placement->image) }}"
+                                                        alt="{{ $advert->title }}">
+                                                </a>
+                                                @php
+                                                    $foundAdvert = true;
+                                                @endphp
+                                                @break(2)
+                                            @endif
+                                        @endforeach
+                                    @endforeach
+                                    @if (!$foundAdvert)
+                                        <img src="{{ asset('assets/img/gallery/header_card.png') }}" alt="Advert Space"
+                                            style="object-fit:cover; opacity:0.7;">
+                                    @endif
                                 </div>
                             </div>
                         </div>
@@ -141,7 +163,7 @@
     </main>
 
 
-    @include('utils.footer', ['popularArticles' => $popularArticles ?? null])
+    @include('utils.footer')
 
     <!-- Search model Begin -->
     <div class="search-model-box">

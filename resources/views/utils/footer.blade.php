@@ -57,7 +57,25 @@
                     <div class="col-xl-3 col-lg-3 col-md-5 col-sm-7">
                         <div class="single-footer-caption mb-50">
                             <div class="banner">
-                                <img src="{{ asset('assets/img/gallery/body_card4.png') }}" alt="">
+                                @php
+                                    $foundAdvert = false;
+                                @endphp
+                                @foreach ($adverts as $advert)
+                                    @foreach ($advert->placements as $placement)
+                                        @if ($placement->page === $currentPage && $placement->position === 'footer_banner' && $advert->status === 'active')
+                                            <a href="{{ $advert->url }}" target="_blank">
+                                                <img src="{{ asset($placement->image) }}" alt="{{ $advert->title }}">
+                                            </a>
+                                            @php
+                                                $foundAdvert = true;
+                                            @endphp
+                                            @break(2)
+                                        @endif
+                                    @endforeach
+                                @endforeach
+                                @if (!$foundAdvert)
+                                    <img src="{{ asset('assets/img/gallery/body_card4.png') }}" alt="">
+                                @endif
                             </div>
                         </div>
                     </div>

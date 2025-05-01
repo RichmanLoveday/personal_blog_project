@@ -322,6 +322,7 @@ async function validateForm(type = 'new') {
     return isValid;
 }
 
+
 async function submitForm(event) {
     event.preventDefault();
 
@@ -381,6 +382,7 @@ async function submitForm(event) {
 
     })
 }
+
 
 async function updateAdvert(event) {
     event.preventDefault();
@@ -442,6 +444,7 @@ async function updateAdvert(event) {
     })
 }
 
+
 $(document).ready(function () {
     // Initialize datetimepickers
     $('#start_date').datetimepicker({
@@ -499,4 +502,114 @@ function selectPageWhenPageLoads(positionEle, pageEle) {
     //? clear page select
     pageEle.empty();
     pageEle.append(pageValues);
+}
+
+function updateStatus(ele, id, status) {
+    $.ajax({
+        url: `${BASE_URL}/admin/advert/updateStatus`,
+        type: 'PUT',
+        data: JSON.stringify({ id, status }),
+        contentType: "application/json",
+        headers: {
+            "X-CSRF-TOKEN": csrf,
+            "Accept": "application/json",
+        },
+        beforeSend: function () {
+            $(ele).prop('disabled', true);
+        },
+        success: function (res) {
+            if (res.status === 'success') {
+                toastr.success(res.message);
+                updateStatusDom(ele, id, status);
+            } else {
+                toastr.error(res.message);
+            }
+        },
+        error: function (xhr) {
+            if (xhr.status === 500) {
+                toastr.error('An error occurred while updating status');
+            }
+        },
+        complete: function () {
+            $(ele).prop('disabled', false);
+        }
+    });
+}
+
+
+function updateStatusDom(ele, id, status) {
+    //? get the status element and the status button element
+    const wrapper = $(ele).closest('tr');
+    const statusEle = wrapper.find('.status');
+    const statusBtn = wrapper.find('.status-btn');
+
+    //? declare the status text and background color based on the status
+    const statusText = status === 'active' ? 'Active' : 'Inactive';
+    const statusBg = status === 'active' ? 'bg-success' : 'bg-danger';
+    const statusBtnText = status === 'active' ? 'Deactivate' : 'Activate';
+    const statusBtnValue = status === 'active' ? 'in-active' : 'active';
+
+    const html = `
+        <span class="badge status ${statusBg}">${statusText}</span>
+    `;
+
+    //? remove the old status and add the new one
+    statusEle.parent().empty().html(html);
+
+    //? remove the old status button and add the new one
+    statusBtn.parent().parent().empty().html(`
+        <button onclick="updateStatus(this, ${id}, '${statusBtnValue}')" class="dropdown-item"><img
+        src="${BASE_URL}/admin/assets/img/icons/eye1.svg"
+        class="me-2 status-btn" alt="img">${statusBtnText} Advert</button>
+    `);
+}
+
+
+function deleteAdvert(ele, id) {
+    Swal.fire({
+        title: 'Are you sure?',
+        text: "You won't be able to revert this!",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#3085d6',
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, delete it!'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            $.ajax({
+                url: `${BASE_URL}/admin/advert/delete/${id}`,
+                type: 'DELETE',
+                contentType: "application/json",
+                headers: {
+                    "X-CSRF-TOKEN": csrf,
+                    "Accept": "application/json",
+                },
+                beforeSend: function () {
+                    $(ele).prop('disabled', true);
+                },
+                success: function (res) {
+                    if (res.status === 'success') {
+                        //? Show success message
+                        swalWithBootstrapButtons.fire({
+                            title: "Deleted!",
+                            text: res.message,
+                            icon: "success"
+                        }).then(() => {
+                            window.location.reload();
+                        });
+                    } else {
+                        toastr.error(res.message);
+                    }
+                },
+                error: function (xhr) {
+                    if (xhr.status === 500) {
+                        toastr.error('An error occurred while deleting advert');
+                    }
+                },
+                complete: function () {
+                    $(ele).prop('disabled', false);
+                }
+            });
+        }
+    })
 }

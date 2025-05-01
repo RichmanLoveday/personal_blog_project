@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Middleware\Cors;
+use App\Http\Middleware\GlobalDataMiddleWare;
 use App\Http\Middleware\IsActiveMiddleWare;
 use App\Http\Middleware\RoleMiddleWare;
 use Illuminate\Foundation\Application;
@@ -19,6 +20,7 @@ return Application::configure(basePath: dirname(__DIR__))
         $middleware->alias([
             'role' => RoleMiddleWare::class,
             'isActive' => IsActiveMiddleWare::class,
+            'globalData' => GlobalDataMiddleWare::class,
         ]);
 
         $middleware->redirectGuestsTo(fn(Request $request) => route('login'));

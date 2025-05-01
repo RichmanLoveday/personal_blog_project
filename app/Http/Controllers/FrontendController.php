@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Http\Controllers\Controller;
+use App\Models\Advert;
 use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
@@ -89,14 +90,6 @@ class FrontendController extends Controller
             ->limit(3)
             ->get();
 
-
-        $popularArticles = Article::with(['category', 'user', 'tags'])
-            ->where('created_at', '>=', now()->subWeek())
-            ->where('status', 'active')
-            ->whereNotNull('published_at')
-            ->orderByDesc('views')
-            ->take(3)
-            ->get();
         //  dd($bannerRightBottom);
 
         return view('index', compact(
@@ -106,10 +99,9 @@ class FrontendController extends Controller
             'categories',
             'activeArticle',
             'mostPopularArticles',
-            'popularArticles',
             'trendingNews',
             'featureNews',
-            'recentNews'
+            'recentNews',
         ));
     }
 
@@ -175,14 +167,6 @@ class FrontendController extends Controller
             ->take(4)
             ->get();
 
-        $popularArticles = Article::with(['category', 'user', 'tags'])
-            ->where('created_at', '>=', now()->subWeek())
-            ->where('status', 'active')
-            ->whereNotNull('published_at')
-            ->orderByDesc('views')
-            ->take(3)
-            ->get();
-
         $categories = Category::with(['posts' => function ($query) {
             $query->where('status', 'active')
                 ->whereNotNull('published_at');
@@ -198,7 +182,7 @@ class FrontendController extends Controller
         Article::where('id', $id)->increment('views');
 
         //? return view
-        return view('blog_detail', compact('article', 'categories', 'recentPosts', 'popularArticles'));
+        return view('blog_detail', compact('article', 'categories', 'recentPosts'));
     }
 
     public function getBlogs()

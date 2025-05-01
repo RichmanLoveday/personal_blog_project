@@ -26,11 +26,10 @@ use Illuminate\Support\Facades\Route;
 
 //? ADMIN ROUTES
 // Route::view('/home', 'index')->name('home');
-Route::view('/about', 'about')->name('about');
+Route::view('/about', 'about')->name('about')->middleware('globalData');;
 // Route::view('/blogs', 'blogs')->name('blogs');
-Route::view('/blog_detail', 'blog_detail');
-Route::view('/category', 'category')->name('category');
-Route::view('/contact', 'contact')->name('contact');
+Route::view('/blog_detail', 'blog_detail')->middleware('globalData');
+Route::view('/contact', 'contact')->name('contact')->middleware('globalData');;
 // Route::view('/admin/dashboard', 'admin/dashboard')->name('dashboard');
 // Route::view('/admin/categories', 'admin/categories/index')->name('all.category');
 // Route::view('/admin/category/add', 'admin/categories/create')->name('category.add');
@@ -141,9 +140,10 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::get('/admin/advert/edit/{id}', 'edit')->name('admin.advert.edit');
         Route::delete('/admin/advert/placement/delete/{id}', 'deletePlacement')->name('admin.advert.placement.delete');
         Route::put('/admin/advert/update', 'update')->name('admin.advert.update');
+        Route::put('/admin/advert/updateStatus', 'updateStatus')->name('admin.advert.update.status');
+        Route::get('/admin/advert/search', 'advertFilter')->name('admin.advert.filter');
     });
 });
-
 
 
 //? AUTHOR MIDDLEWARES
@@ -181,26 +181,32 @@ Route::middleware(['auth', 'role:author', 'isActive'])->group(function () {
 Route::redirect('/', '/home')->name('home.redirect');
 
 //? FRONTEND CONTROLLER
-Route::controller(FrontendController::class)->group(function () {
-    Route::get('/home', 'index')->name('home');
-    Route::get('/home/getArticlesByCategory/{id}', 'getArticlesByCategory')->name('home.get.articles.by.category');
-    Route::get('/blog/{slug}', 'showBlog')->name('blog.show');
-    Route::get('/blog/category/{slug}', 'getBlogsByCategory')->name('blog.category.name');
-    Route::get('/blog/tag/{slug}', 'getBlogByTag')->name('blog.tag.name');
-    Route::get('/blogs', 'getBlogs')->name('blogs.all');
-});
-
-Route::controller(Subscribtion::class)->group(function () {
-    Route::post('/subscribe/store', 'store')->name('subscribe.store');
-    Route::delete('/subscribe/delete/{id}', 'delete')->name('unsubscribe');
-});
+Route::middleware(['globalData'])->group(function () {
+    Route::controller(FrontendController::class)->group(function () {
+        Route::get('/home', 'index')->name('home');
+        Route::get('/home/getArticlesByCategory/{id}', 'getArticlesByCategory')->name('home.get.articles.by.category');
+        Route::get('/blog/{slug}', 'showBlog')->name('blog.show');
+        Route::get('/blog/category/{slug}', 'getBlogsByCategory')->name('blog.category.name');
+        Route::get('/blog/tag/{slug}', 'getBlogByTag')->name('blog.tag.name');
+        Route::get('/blogs', 'getBlogs')->name('blogs.all');
+    });
 
 
-Route::controller(ControllersCategory::class)->group(function () {
-    Route::get('/category', 'index')->name('category.all');
-    Route::get('/category/{slug}/article', 'getArticleByCategory')->name('category.article');
-    Route::get('/category/article/{categoryId}', 'getArticleByCategoryId')->name('category.article.id');
+    //? SUBSCRIBTION CONTROLLER
+    Route::controller(Subscribtion::class)->group(function () {
+        Route::post('/subscribe/store', 'store')->name('subscribe.store');
+        Route::delete('/subscribe/delete/{id}', 'delete')->name('unsubscribe');
+    });
+
+    //? FRONTEND CATEGORY CONTROLLER
+    Route::controller(ControllersCategory::class)->group(function () {
+        Route::get('/category', 'index')->name('category.all');
+        Route::get('/category/{slug}/article', 'getArticleByCategory')->name('category.article');
+        Route::get('/category/article/{categoryId}', 'getArticleByCategoryId')->name('category.article.id');
+    });
 });
+
+
 
 
 Route::get('/dashboard', function () {
