@@ -48,5 +48,7 @@ class Subscribtion extends Controller
         }
     }
 
+    public function unsubscribe() {}
+
     public function delete() {}
 }
