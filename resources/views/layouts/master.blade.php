@@ -66,7 +66,8 @@
                                 </div>
                                 <div class="header-info-right">
                                     <ul class="header-date">
-                                        <li><span class="flaticon-calendar"></span> +880166 253 232</li>
+                                        <li><span class="flaticon-calendar"></span>
+                                            {{ isset($settings->phone) ? $settings->phone : '' }}</li>
                                     </ul>
                                 </div>
                             </div>
@@ -139,11 +140,15 @@
                                 <div class="header-right f-right d-none d-lg-block">
                                     <!-- Heder social -->
                                     <ul class="header-social">
-                                        <li><a href="https://www.fb.com/sai4ull"><i class="fab fa-facebook-f"></i></a>
+                                        <li><a target="_blank"
+                                                href="{{ isset($settings->facebook_link) ? $settings->facebook_link : '#' }}"><i
+                                                    class="fab fa-facebook-f"></i></a>
                                         </li>
-                                        <li><a href="#"><i class="fab fa-twitter"></i></a></li>
-                                        <li><a href="#"><i class="fab fa-instagram"></i></a></li>
-                                        <li> <a href="#"><i class="fab fa-youtube"></i></a></li>
+                                        <li><a target="_blank"
+                                                href="{{ isset($settings->twitter_link) ? $settings->twitter_link : '#' }}"><i
+                                                    class="fab fa-twitter"></i></a></li>
+                                        {{-- <li><a href="{{ $ }}"><i class="fab fa-instagram"></i></a></li>
+                                        <li> <a href="#"><i class="fab fa-youtube"></i></a></li> --}}
                                     </ul>
                                 </div>
                             </div>

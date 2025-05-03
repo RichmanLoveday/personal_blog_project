@@ -6,6 +6,7 @@ use App\Models\Advert;
 use App\Models\Article;
 use Closure;
 use Illuminate\Http\Request;
+use App\Models\Setting;
 use Symfony\Component\HttpFoundation\Response;
 
 class GlobalDataMiddleWare
@@ -20,7 +21,7 @@ class GlobalDataMiddleWare
 
         //? get all most popular articles with views greater than 50
         $popularArticles = Article::with(['category', 'user', 'tags'])
-            //->where('created_at', '>=', now()->subWeek())
+            ->where('created_at', '>=', now()->subWeek())
             ->where('status', 'active')
             ->whereNotNull('published_at')
             ->orderByDesc('views')
@@ -57,6 +58,7 @@ class GlobalDataMiddleWare
         ], function ($view) use ($adverts, $popularArticles) {
             $view->with([
                 'adverts' => $adverts,
+                'settings' => Setting::first(),
                 'popularArticles' => $popularArticles,
                 'currentPage' => request()->segment(1),     //? get current page from url
             ]);

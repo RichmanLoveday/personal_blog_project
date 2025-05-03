@@ -174,6 +174,18 @@ class FrontendController extends Controller
             ->get();
 
 
+        $tags = cache()->remember('active_tags', now()->addMinutes(5), function () {
+            return Tag::withWhereHas('articles', function ($query) {
+                $query->where('status', 'active')
+                    ->whereNotNull('published_at');
+            })
+                ->where('status', 'active')
+                ->inRandomOrder()
+                ->take(8)
+                ->get();
+        });
+
+
         if (!$article) abort(404);
 
         // dd($recentPosts);
@@ -182,7 +194,12 @@ class FrontendController extends Controller
         Article::where('id', $id)->increment('views');
 
         //? return view
-        return view('blog_detail', compact('article', 'categories', 'recentPosts'));
+        return view('blog_detail', compact(
+            'article',
+            'categories',
+            'recentPosts',
+            'tags'
+        ));
     }
 
     public function getBlogs()
@@ -210,19 +227,20 @@ class FrontendController extends Controller
         }])->where('status', 'active')
             ->get();
 
+
         //? get tags randomly
-        $tags = cache()->remember('active_tags', now()->addMinutes(30), function () {
-            return Tag::withWhereHas(['articles' => function ($query) {
+        $tags = cache()->remember('active_tags', now()->addMinutes(5), function () {
+            return Tag::withWhereHas('articles', function ($query) {
                 $query->where('status', 'active')
                     ->whereNotNull('published_at');
-            }])
+            })
                 ->where('status', 'active')
                 ->inRandomOrder()
-                ->take(8) // Randomly select 8 tags
+                ->take(8)
                 ->get();
         });
 
-        dd($tags->toArray());
+        // dd($tags->toArray());
 
         return view('blogs', compact('articles', 'recentPosts', 'categories', 'tags'));
     }
@@ -303,7 +321,7 @@ class FrontendController extends Controller
 
 
         //? get tags randomly
-        $tags = cache()->remember('active_tags', now()->addMinutes(30), function () {
+        $tags = cache()->remember('active_tags', now()->addMinutes(5), function () {
             return Tag::withWhereHas(['posts' => function ($query) {
                 $query->where('status', 'active')
                     ->whereNotNull('published_at');

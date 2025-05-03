@@ -96,7 +96,7 @@
                             <a class="dropdown-item" href="{{ route('admin.profile', Auth::user()->id) }}"> <i
                                     class="me-2" data-feather="user"></i>
                                 My Profile</a>
-                            <a class="dropdown-item" href="{{ route('settings') }}"><i class="me-2"
+                            <a class="dropdown-item" href="{{ route('admin.setting.index') }}"><i class="me-2"
                                     data-feather="settings"></i>Settings</a>
                             <hr class="m-0">
                             <a class="dropdown-item logout pb-0" href="{{ route('admin.logout') }}"><img
@@ -112,7 +112,7 @@
                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="profile.html">My Profile</a>
-                    <a class="dropdown-item" href="{{ route('settings') }}">Settings</a>
+                    <a class="dropdown-item" href="{{ route('admin.setting.index') }}">Settings</a>
                     <a class="dropdown-item" href="signin.html">Logout</a>
                 </div>
             </div>
@@ -181,7 +181,7 @@
                         </li>
 
                         <li class="">
-                            <a href="{{ route('settings') }}"><img
+                            <a href="{{ route('admin.setting.index') }}"><img
                                     src="{{ asset('admin/assets/img/icons/settings.svg') }}" alt="img"><span>
                                     Settings</span> </a>
                         </li>

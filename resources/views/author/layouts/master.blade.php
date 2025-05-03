@@ -137,7 +137,7 @@
                             </ul>
                         </li>
 
-                        <li class="submenu">
+                        {{-- <li class="submenu">
                             <a href="javascript:void(0);"><img src="{{ asset('admin/assets/img/icons/advert.png') }}"
                                     alt="img"><span> Advert Management</span> <span
                                     class="menu-arrow"></span></a>
@@ -146,7 +146,7 @@
                                 <li><a href="newuser.html">Active Adverts </a></li>
                                 <li><a href="userlists.html">Inactive Adverts</a></li>
                             </ul>
-                        </li>
+                        </li> --}}
                     </ul>
                 </div>
             </div>

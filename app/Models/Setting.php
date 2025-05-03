@@ -10,7 +10,5 @@ class Setting extends Model
     use HasFactory;
 
     protected $guarded = [];
-    protected $table = 'settings';
-
-    //  public 
+    protected $table = 'site_settings';
 }

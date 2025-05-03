@@ -7,6 +7,7 @@ use App\Http\Controllers\Admin\Articles;
 use App\Http\Controllers\Admin\Author;
 use App\Http\Controllers\Admin\Category;
 use App\Http\Controllers\Admin\ProfileController as AdminProfileController;
+use App\Http\Controllers\Admin\Settings;
 use App\Http\Controllers\Admin\TagsController;
 use App\Http\Controllers\Author\Articles as AuthorArticles;
 use App\Http\Controllers\Author\AuthorAuthentication;
@@ -45,7 +46,7 @@ Route::view('/admin/adverts', 'admin/advert/index')->name('advert.index');
 // Route::view('/admin/author/profile', 'admin/author/profile')->name('author.profile');
 Route::view('/admin/team-management', 'admin/teamManagement/index')->name('all.team.management');
 Route::view('/admin/team-management/add', 'admin/teamManagement/create')->name('team.management.add');
-Route::view('/admin/settings', 'admin/settings/index')->name('settings');
+//Route::view('/admin/settings', 'admin/settings/index')->name('settings');
 // Route::view('/admin/profile', 'admin/profile/index')->name('profile');
 
 
@@ -142,6 +143,13 @@ Route::middleware(['auth', 'role:admin', 'isActive'])->group(function () {
         Route::put('/admin/advert/update', 'update')->name('admin.advert.update');
         Route::put('/admin/advert/updateStatus', 'updateStatus')->name('admin.advert.update.status');
         Route::get('/admin/advert/search', 'advertFilter')->name('admin.advert.filter');
+    });
+
+
+    //? SETTINGS CONTROLLER
+    Route::controller(Settings::class)->group(function () {
+        Route::get('/admin/settings', 'index')->name('admin.setting.index');
+        Route::put('/admin/settings/update', 'update')->name('admin.setting.update');
     });
 });
 
