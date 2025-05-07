@@ -15,6 +15,7 @@ class Subscribers extends Model
         'city',
         'ip',
         'country',
+        'token',
     ];
 
     protected $table = 'subscribers';

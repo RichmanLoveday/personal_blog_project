@@ -51,6 +51,8 @@ class GlobalDataMiddleWare
         view()->composer([
             'index',
             'about',
+            'unsubscribe',
+            'unsubscribe-success',
             'category',
             'blogs',
             'blog_detail',

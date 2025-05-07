@@ -10,7 +10,8 @@
 
         <div class="card">
             <div class="card-body">
-                <form action="{{ route('admin.setting.update') }}" onclick="submitForm(event)" id="settingsForm" method="post">
+                <form action="{{ route('admin.setting.update') }}" onsubmit="submitForm(event)" id="settingsForm"
+                    method="post">
                     @csrf
                     @method('PUT')
                     <div class="row">
@@ -45,7 +46,7 @@
                         <div class="col-lg-6 col-sm-12 col-12">
                             <div class="form-group">
                                 <label>Our Mission</label>
-                                <textarea name="our_mission" class=" form-control" style="resize: none" name="" id="" cols="30"
+                                <textarea name="our_mission" class="form-control" style="resize: none" name="" id="" cols="30"
                                     rows="10">{{ isset($settings->our_mission) ? $settings->our_mission : '' }}</textarea>
                             </div>
                         </div>
@@ -53,7 +54,7 @@
                         <div class="col-lg-6 col-sm-12 col-12">
                             <div class="form-group">
                                 <label>Our Vission</label>
-                                <textarea name="our_vission" class=" form-control" style="resize: none" name="" id="" cols="30"
+                                <textarea name="our_vission" class="form-control" style="resize: none" name="" id="" cols="30"
                                     rows="10">{{ isset($settings->our_vission) ? $settings->our_vission : '' }}</textarea>
                             </div>
                         </div>

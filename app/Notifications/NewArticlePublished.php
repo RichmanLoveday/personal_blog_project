@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Models\Setting;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -13,14 +14,16 @@ class NewArticlePublished extends Notification
     use Queueable;
 
     protected $article;
+    protected $subscriber_token;
     protected $senderModel;
 
     /**
      * Create a new notification instance.
      */
-    public function __construct($article, $senderModel = null)
+    public function __construct($article, $subscriber_token, $senderModel = null)
     {
         $this->senderModel = $senderModel;
+        $this->subscriber_token = $subscriber_token;
         $this->article = $article;
     }
 
@@ -39,6 +42,7 @@ class NewArticlePublished extends Notification
      */
     public function toMail(object $notifiable): MailMessage
     {
+        $settings = Setting::first();
         // echo url(route('blog.show', $this->article->id));
         // echo url(route('unsubscribe', $notifiable->id));
         // die;
@@ -49,8 +53,13 @@ class NewArticlePublished extends Notification
                 'articleImage' => $this->article->image,
                 'articleTitle' => $this->article->title,
                 'articleSummary' => $this->article->text,
+                'facebookLink' => $settings->facebook_link,
+                'twitterLink' => $settings->twitter_link,
                 'articleUrl' => url((route('blog.show', $this->article->slug . '-' . $this->article->id))),
-                'unsubscribeLink' => url(route('unsubscribe', $notifiable->id)),
+                'unsubscribeLink' => url(route(
+                    'unsubscribe',
+                    ['token' => $this->subscriber_token]
+                )),
             ]);
     }
 

@@ -199,11 +199,12 @@ Route::middleware(['globalData'])->group(function () {
         Route::get('/blogs', 'getBlogs')->name('blogs.all');
     });
 
-
     //? SUBSCRIBTION CONTROLLER
     Route::controller(Subscribtion::class)->group(function () {
         Route::post('/subscribe/store', 'store')->name('subscribe.store');
-        Route::delete('/subscribe/delete/{id}', 'delete')->name('unsubscribe');
+        Route::get('/unsubscribe/{token}', 'unsubscribe')->name('unsubscribe');
+        Route::post('/unsubscribe/delete', 'destroy')->name('unsubscribe.confirm');
+        Route::get('/success', 'success')->name('unsubscribe.success');
     });
 
     //? FRONTEND CATEGORY CONTROLLER

@@ -98,12 +98,10 @@
 
         <div class="footer">
             <div class="social-icons">
-                <a href="https://facebook.com/yourpage"><img src="https://img.icons8.com/color/48/facebook.png"
-                        alt="Facebook" /></a>
-                <a href="https://twitter.com/yourprofile"><img src="https://img.icons8.com/color/48/twitter.png"
-                        alt="Twitter" /></a>
-                <a href="https://instagram.com/yourpage"><img src="https://img.icons8.com/color/48/instagram-new.png"
-                        alt="Instagram" /></a>
+                <a href="{{ isset($facebookLink) ? $facebookLink : '#' }}"><img
+                        src="https://img.icons8.com/color/48/facebook.png" alt="Facebook" /></a>
+                <a href="{{ isset($twitterLink) ? $twitterLink : '#' }}"><img
+                        src="https://img.icons8.com/color/48/twitter.png" alt="Twitter" /></a>
             </div>
             <p>&copy; {{ date('Y') }} Your Blog. All rights reserved.</p>
             <p><a href="{{ $unsubscribeLink }}" style="color: #007bff;">Unsubscribe</a></p>

@@ -16,8 +16,9 @@
                                     <div class="footer-pera">
                                         <p class="info1">Lorem ipsum dolor sit amet, nsectetur adipiscing elit,
                                             sed do eiusmod tempor incididunt ut labore.</p>
-                                        <p class="info2">198 West 21th Street, Suite 721 New York,NY 10010</p>
-                                        <p class="info2">Phone: +95 (0) 123 456 789 Cell: +95 (0) 123 456 789</p>
+                                        <p class="info2">{{ isset($settings->address) ? $settings->address : '' }}</p>
+                                        <p class="info2">Phone: {{ isset($settings->phone) ? $settings->phone : '' }}
+                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -83,7 +84,7 @@
             </div>
         </div>
         <!-- footer-bottom aera -->
-        <div class="footer-bottom-area footer-bg">
+        <div class="footer-bottom-area footer-bg">a
             <div class="container">
                 <div class="footer-border">
                     <div class="row d-flex align-items-center">
@@ -95,7 +96,7 @@
                                         document.write(new Date().getFullYear());
                                     </script> All rights reserved | This template is made with <i
                                         class="fa fa-heart" aria-hidden="true"></i> by <a href="https://colorlib.com/"
-                                        target="_blank">Colorlib</a>
+                                        target="_blank">Richman Loveday</a>
                                     <!-- Link back to Colorlib can't be removed. Template is licensed under CC BY 3.0. -->
                                 </p>
                             </div>

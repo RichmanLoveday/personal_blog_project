@@ -19,7 +19,7 @@ class Category extends Controller
         //? get article by the first category provided
         $articles = [];
         if ($categories && $categories->isNotEmpty()) {
-            $articles = Article::with(['category', 'user', 'tags'])
+            $articles = Artice::with(['category', 'user', 'tags'])
                 ->where('category_id', $categories->first()->id)
                 ->where('status', 'active')
                 ->whereNotNull('published_at')
