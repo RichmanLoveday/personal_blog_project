@@ -10,26 +10,12 @@ Artisan::command('inspire', function () {
     $this->comment(Inspiring::quote());
 })->purpose('Display an inspiring quote');
 
+//? scheduled job for sending advert expiring notification
+Schedule::job(new SendAdvertExpiringNotification)
+    ->daily()
+    ->everyFiveSeconds();
 
-//? adever scheduling for expiring and deactivation
-Schedule::daily()
-    ->everySixHours()
-    ->group(function () {
-        //? scheduled job for sending advert expiring notification
-        Schedule::job(new SendAdvertExpiringNotification, 'advert-expiring')
-            ->onSuccess(function () {
-                $this->info('Advert expiring notification sent successfully.');
-            })
-            ->onFailure(function () {
-                $this->error('Failed to send advert expiring notification.');
-            });
-
-        //? scheduled job for sending advert deactivation notification
-        Schedule::job(new SendAdvertDeactivationNotification, 'advert-deactivation')
-            ->onSuccess(function () {
-                $this->info('Advert deactivation notification sent successfully.');
-            })
-            ->onFailure(function () {
-                $this->error('Failed to send advert deactivation notification.');
-            });
-    });
+//? scheduled job for sending advert deactivation notification
+Schedule::job(new SendAdvertDeactivationNotification)
+    ->daily()
+    ->everyFiveSeconds();
