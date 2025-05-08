@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Admin;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\StoreAdvertsRequest;
 use App\Http\Requests\StoreUpdateAdvertsRequest;
+use App\Jobs\SendAdvertDeactivationNotification;
 use App\Models\Advert;
 use App\Models\AdvertPlacement;
 use Carbon\Carbon;
@@ -181,12 +182,21 @@ class Adverts extends Controller
             ]);
 
             //? find advert by id or fail
-            $advert = Advert::findOrFail($request->id);
+            $advert = Advert::with(['user'])
+                ->findOrFail($request->id);
 
             //? update status
             $advert->update([
                 'status' => $request->status,
             ]);
+
+            //? send notification to admin if status is in-active
+            if ($request->status === 'in-active') {
+                dispatch(new SendAdvertDeactivationNotification(
+                    'manual',
+                    $advert
+                ));
+            }
 
             return response()->json(['status' => 'success', 'message' => 'Advert status updated successfully!']);
         } catch (\Exception $e) {

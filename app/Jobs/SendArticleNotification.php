@@ -37,10 +37,10 @@ class SendArticleNotification implements ShouldQueue
      */
     public function handle()
     {
-        $subscribers = Subscribers::all();
-
-        foreach ($subscribers as $subscribe) {
-            $subscribe->notify(new NewArticlePublished($this->article, $subscribe->token, $this->sender));
-        }
+        Subscribers::chunk(100, function ($subscribers) {
+            foreach ($subscribers as $subscribe) {
+                $subscribe->notify(new NewArticlePublished($this->article, $subscribe->token, $this->sender));
+            }
+        });
     }
 }
