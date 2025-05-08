@@ -31,7 +31,7 @@ class SendAdvertExpiringNotification implements ShouldQueue
 
         //? contuct 3 days date to remind admin to renew advertisment
         $dates = [
-            now()->addDays(2)->toDateString(),
+            now()->addDays(3)->toDateString(),
             now()->addDays(2)->toDateString(),
             now()->addDays(1)->toDateString(),
         ];

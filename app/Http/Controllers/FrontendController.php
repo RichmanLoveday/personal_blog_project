@@ -8,8 +8,10 @@ use App\Models\Article;
 use App\Models\Category;
 use App\Models\Tag;
 use App\Models\ArticleTag;
+use App\Notifications\ContactNotification;
 use Illuminate\Cache\RateLimiting\Limit;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Notification;
 use PhpParser\Node\Stmt\TryCatch;
 
 class FrontendController extends Controller
@@ -337,7 +339,41 @@ class FrontendController extends Controller
 
 
 
-    public function about() {}
+    public function sendMail(Request $request)
+    {
+        try {
+            //? validate request
+            $request->validate([
+                'name' => 'required|string|max:255',
+                'email' => 'required|email|max:255',
+                'subject' => 'required|string|max:255',
+                'message' => 'required|string|max:1000',
+            ]);
+
+            //? send mail to admin
+            $adminEmail = config('mail.admin_email', 'lovedayrichman@yahoo.com');
+
+            //? set notification route
+            Notification::route('mail', $adminEmail)
+                ->notify(new ContactNotification(
+                    $request->name,
+                    $request->email,
+                    $request->subject,
+                    $request->message
+                ));
+
+            //? send response
+            return response()->json([
+                'status' => 'success',
+                'message' => 'Message sent successfully',
+            ]);
+        } catch (\Exception $e) {
+            return response()->json([
+                'status' => 'error',
+                'message' => $e->getMessage(),
+            ], 422);
+        }
+    }
 
     public function blogs() {}
 }

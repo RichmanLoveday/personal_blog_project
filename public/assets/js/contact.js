@@ -55,11 +55,17 @@ $(document).ready(function () {
                     }
                 },
                 submitHandler: function (form) {
+                    console.log(form)
                     $(form).ajaxSubmit({
                         type: "POST",
                         data: $(form).serialize(),
-                        url: "contact_process.php",
-                        success: function () {
+                        url: $(form).attr('action'),
+                        success: function (response) {
+                            if (response.status == 'success') {
+                                toastr.success(response.message);
+                            } else {
+                                toastr.error(response.message);
+                            }
                             $('#contactForm :input').attr('disabled', 'disabled');
                             $('#contactForm').fadeTo("slow", 1, function () {
                                 $(this).find(':input').attr('disabled', 'disabled');
@@ -67,7 +73,7 @@ $(document).ready(function () {
                                 $('#success').fadeIn()
                                 $('.modal').modal('hide');
                                 $('#success').modal('show');
-                            })
+                            });
                         },
                         error: function () {
                             $('#contactForm').fadeTo("slow", 1, function () {

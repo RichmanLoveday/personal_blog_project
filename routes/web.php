@@ -27,10 +27,9 @@ use Illuminate\Support\Facades\Route;
 
 //? ADMIN ROUTES
 // Route::view('/home', 'index')->name('home');
-Route::view('/about', 'about')->name('about')->middleware('globalData');;
+// Route::view('/about', 'about')->name('about')->middleware('globalData');;
 // Route::view('/blogs', 'blogs')->name('blogs');
-Route::view('/blog_detail', 'blog_detail')->middleware('globalData');
-Route::view('/contact', 'contact')->name('contact')->middleware('globalData');;
+// Route::view('/blog_detail', 'blog_detail')->middleware('globalData');
 // Route::view('/admin/dashboard', 'admin/dashboard')->name('dashboard');
 // Route::view('/admin/categories', 'admin/categories/index')->name('all.category');
 // Route::view('/admin/category/add', 'admin/categories/create')->name('category.add');
@@ -197,6 +196,7 @@ Route::middleware(['globalData'])->group(function () {
         Route::get('/blog/category/{slug}', 'getBlogsByCategory')->name('blog.category.name');
         Route::get('/blog/tag/{slug}', 'getBlogByTag')->name('blog.tag.name');
         Route::get('/blogs', 'getBlogs')->name('blogs.all');
+        Route::post('/contact/mail', 'sendMail')->name('contact.send.mail');
     });
 
     //? SUBSCRIBTION CONTROLLER
@@ -213,6 +213,11 @@ Route::middleware(['globalData'])->group(function () {
         Route::get('/category/{slug}/article', 'getArticleByCategory')->name('category.article');
         Route::get('/category/article/{categoryId}', 'getArticleByCategoryId')->name('category.article.id');
     });
+
+
+    //? view contact page, about page
+    Route::view('/contact', 'contact')->name('contact');
+    Route::view('/about', 'about')->name('about');
 });
 
 
