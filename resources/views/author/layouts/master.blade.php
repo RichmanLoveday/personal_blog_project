@@ -110,7 +110,7 @@
                     aria-expanded="false"><i class="fa fa-ellipsis-v"></i></a>
                 <div class="dropdown-menu dropdown-menu-right">
                     <a class="dropdown-item" href="profile.html">My Profile</a>
-                    <a class="dropdown-item" href="{{ route('settings') }}">Settings</a>
+                    {{-- <a class="dropdown-item" href="{{ route('settings') }}">Settings</a> --}}
                     <a class="dropdown-item" href="signin.html">Logout</a>
                 </div>
             </div>
@@ -132,8 +132,8 @@
                                     Article Management</span> <span class="menu-arrow"></span></a>
                             <ul>
                                 <li><a href="{{ route('author.articles') }}">All Articles</a></li>
-                                <li><a href="{{ route('article.publish') }}">Published Articles</a></li>
-                                <li><a href="{{ route('article.draft') }}">Drafted Articles</a></li>
+                                {{-- <li><a href="{{ route('article.publish') }}">Published Articles</a></li>
+                                <li><a href="{{ route('article.draft') }}">Drafted Articles</a></li> --}}
                             </ul>
                         </li>
 

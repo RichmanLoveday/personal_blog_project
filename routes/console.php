@@ -13,9 +13,9 @@ Artisan::command('inspire', function () {
 //? scheduled job for sending advert expiring notification
 Schedule::job(new SendAdvertExpiringNotification)
     ->daily()
-    ->everyFiveSeconds();
+    ->everySixHours();
 
 //? scheduled job for sending advert deactivation notification
 Schedule::job(new SendAdvertDeactivationNotification)
     ->daily()
-    ->everyFiveSeconds();
+    ->everySixHours();

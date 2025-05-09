@@ -52,6 +52,7 @@ class ProfileController extends Controller
         $request->validate([
             'firstName' => ['required', 'string', 'max:50'],
             'lastName' => ['required', 'string', 'max:50'],
+            'phone' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
         ]);
 
         try {
@@ -60,6 +61,7 @@ class ProfileController extends Controller
                 ->update([
                     'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
+                    'phone' => $request->phone,
                     'updated_at' => now(),
                 ]);
 

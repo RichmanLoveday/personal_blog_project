@@ -338,7 +338,6 @@ class FrontendController extends Controller
     }
 
 
-
     public function sendMail(Request $request)
     {
         try {

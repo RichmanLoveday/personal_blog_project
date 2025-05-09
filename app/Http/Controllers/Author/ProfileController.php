@@ -36,7 +36,7 @@ class ProfileController extends Controller
             'firstName' => ['required', 'string', 'max:50'],
             'lastName' => ['required', 'string', 'max:50'],
             'aboutMe' => ['required', 'string', 'max:2500'],
-            'phone' => ['required', 'max:20'],
+            'phone' => ['required', 'regex:/^\+?[0-9]{10,15}$/'],
         ]);
 
 
@@ -47,6 +47,7 @@ class ProfileController extends Controller
                     'firstName' => $request->firstName,
                     'lastName' => $request->lastName,
                     'aboutMe' => $request->aboutMe,
+                    'phone' => $request->phone,
                     'updated_at' => now(),
                 ]);
 

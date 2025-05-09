@@ -53,7 +53,7 @@
 
         <div class="header">
             <div class="header-left active">
-                <a href="index.html" class="logo">
+                <a href="{{ route('admin.dashboard') }}" class="logo">
                     <img src="{{ asset('admin/assets/img/logo.png') }}" alt="">
                 </a>
                 <a href="index.html" class="logo-small">
@@ -123,8 +123,8 @@
                 <div id="sidebar-menu" class="sidebar-menu">
                     <ul>
                         <li class="active">
-                            <a href="index.html"><img src="{{ asset('admin/assets/img/icons/dashboard.svg') }}"
-                                    alt="img"><span>
+                            <a href="{{ route('admin.dashboard') }}"><img
+                                    src="{{ asset('admin/assets/img/icons/dashboard.svg') }}" alt="img"><span>
                                     Dashboard</span> </a>
                         </li>
                         <li class="submenu">
@@ -174,11 +174,11 @@
                             </a>
                         </li>
 
-                        <li class="">
+                        {{-- <li class="">
                             <a href="{{ route('all.team.management') }}"><img
                                     src="{{ asset('admin/assets/img/icons/team.png') }}" alt="img"><span>
                                     Team Management</span> </a>
-                        </li>
+                        </li> --}}
 
                         <li class="">
                             <a href="{{ route('admin.setting.index') }}"><img

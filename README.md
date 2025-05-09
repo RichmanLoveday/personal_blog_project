@@ -1,66 +1,139 @@
-<p align="center"><a href="https://laravel.com" target="_blank"><img src="https://raw.githubusercontent.com/laravel/art/master/logo-lockup/5%20SVG/2%20CMYK/1%20Full%20Color/laravel-logolockup-cmyk-red.svg" width="400" alt="Laravel Logo"></a></p>
+# 📰 Laravel Blog Platform
 
-<p align="center">
-<a href="https://github.com/laravel/framework/actions"><img src="https://github.com/laravel/framework/workflows/tests/badge.svg" alt="Build Status"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/dt/laravel/framework" alt="Total Downloads"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/v/laravel/framework" alt="Latest Stable Version"></a>
-<a href="https://packagist.org/packages/laravel/framework"><img src="https://img.shields.io/packagist/l/laravel/framework" alt="License"></a>
-</p>
+A feature-rich **Laravel 11** blog platform built for content publishing and advertisement management, with robust support for email notifications, roles, scheduled tasks, and more.
 
-## About Laravel
+---
 
-Laravel is a web application framework with expressive, elegant syntax. We believe development must be an enjoyable and creative experience to be truly fulfilling. Laravel takes the pain out of development by easing common tasks used in many web projects, such as:
+## 🌟 Features Overview
 
-- [Simple, fast routing engine](https://laravel.com/docs/routing).
-- [Powerful dependency injection container](https://laravel.com/docs/container).
-- Multiple back-ends for [session](https://laravel.com/docs/session) and [cache](https://laravel.com/docs/cache) storage.
-- Expressive, intuitive [database ORM](https://laravel.com/docs/eloquent).
-- Database agnostic [schema migrations](https://laravel.com/docs/migrations).
-- [Robust background job processing](https://laravel.com/docs/queues).
-- [Real-time event broadcasting](https://laravel.com/docs/broadcasting).
+### 🧑‍💻 User Roles
 
-Laravel is accessible, powerful, and provides tools required for large, robust applications.
+- **Admin**
+  - Manage users by performing CRUD operation
+  - Manage categories by performing CRUD operation
+  - Manage own defined tags and authors tags
+  - Manages advertisements by performing CRUD operation
+  - Receives email alerts for advertisement expiry and deactivation.
+  
+- **Author**
+  - Can create and manage their own articles.
+  - Can define **tags** or used their own created **tags** while writing articles for better categorization.
+  
+### ✍️ Blog Management
 
-## Learning Laravel
+- Authors can:
+  - Add articles with title, image, content, and tags.
+  - Automatically generate a summary (used in email previews).
+- Articles are viewable in blog layout.
 
-Laravel has the most extensive and thorough [documentation](https://laravel.com/docs) and video tutorial library of all modern web application frameworks, making it a breeze to get started with the framework.
+### 🏷️ Tagging System
 
-You may also try the [Laravel Bootcamp](https://bootcamp.laravel.com), where you will be guided through building a modern Laravel application from scratch.
+- While creating an article, authors can define new tags.
+- Tags are stored and reused across articles.
+- Helps in content filtering and SEO optimization.
 
-If you don't feel like reading, [Laracasts](https://laracasts.com) can help. Laracasts contains thousands of video tutorials on a range of topics including Laravel, modern PHP, unit testing, and JavaScript. Boost your skills by digging into our comprehensive video library.
+### 📢 Advertisement System
 
-## Laravel Sponsors
+- Ads can be placed in specific **positions**:
+  - `top_banner`, `footer_banner`, etc.
+- Ads are linked with **placements** and have `start_date` and `end_date`.
+- Default fallback image is shown if no ad matches current page or position.
+- Admins receive expiry warnings via email:
+  - 3 days before expiry
+  - 2 days before expiry
+  - 1 day before expiry
+- Expired ads are **automatically deactivated** or **deactivated by admin ony**, and admin is notified.
 
-We would like to extend our thanks to the following sponsors for funding Laravel development. If you are interested in becoming a sponsor, please visit the [Laravel Partners program](https://partners.laravel.com).
+### 📧 Email Notifications
 
-### Premium Partners
+- Change of email notification
+- Blog post email (sent to subscribers).
+- Expiring advert warning email (to admin).
+- Advert deactivation email (to admin).
 
-- **[Vehikl](https://vehikl.com/)**
-- **[Tighten Co.](https://tighten.co)**
-- **[WebReinvent](https://webreinvent.com/)**
-- **[Kirschbaum Development Group](https://kirschbaumdevelopment.com)**
-- **[64 Robots](https://64robots.com)**
-- **[Curotec](https://www.curotec.com/services/technologies/laravel/)**
-- **[Cyber-Duck](https://cyber-duck.co.uk)**
-- **[DevSquad](https://devsquad.com/hire-laravel-developers)**
-- **[Jump24](https://jump24.co.uk)**
-- **[Redberry](https://redberry.international/laravel/)**
-- **[Active Logic](https://activelogic.com)**
-- **[byte5](https://byte5.de)**
-- **[OP.GG](https://op.gg)**
+### 📸 Responsive Email Templates
 
-## Contributing
+- Email content adapts to mobile and desktop screens.
+- Dynamic data (title, URLs, images) is injected into views.
 
-Thank you for considering contributing to the Laravel framework! The contribution guide can be found in the [Laravel documentation](https://laravel.com/docs/contributions).
+---
 
-## Code of Conduct
+## 📦 Technologies Used
 
-In order to ensure that the Laravel community is welcoming to all, please review and abide by the [Code of Conduct](https://laravel.com/docs/contributions#code-of-conduct).
+- **Laravel 11**
+- **Blade Templates**
+- **MySQL**
+- **Laravel Queues** (`database`)
+- **Task Scheduling**
+- **XAMPP for Localhost (Windows)**
 
-## Security Vulnerabilities
+---
 
-If you discover a security vulnerability within Laravel, please send an e-mail to Taylor Otwell via [taylor@laravel.com](mailto:taylor@laravel.com). All security vulnerabilities will be promptly addressed.
+## 🛠 Setup Instructions
 
-## License
+### 1. Clone the Repository
 
-The Laravel framework is open-sourced software licensed under the [MIT license](https://opensource.org/licenses/MIT).
+```bash
+git clone https://github.com/RichmanLoveday/personal_blog_project.git
+cd laravel-blog-platform
+```
+
+### 2. Install Depend
+
+- composer install
+- npm install && npm run dev.
+
+### 3. Envirionment configuration
+
+- Update your database cresidentials.
+- Mail settings for notifications.
+- Queue connection set to database.
+
+### 4. Run migration and seeders
+
+- php artisan migrate
+- php artisan db:seed
+
+
+## 🧵 Queued Jobs (Email Notifications)
+
+### 1. Create queued tables
+
+- php artisan queue:table
+- php artisan migrate
+
+### 2. Start the queue worker
+
+- php artisan queue:work
+
+
+## ⏰ Scheduled Tasks
+
+### In routes/console.php
+
+### Scheduled Jobs for Advertisement Notifications
+
+The following scheduled tasks are configured to handle advertisement notifications:
+
+- **Send Advert Expiring Notification**  
+    Sends email notifications to the admin about advertisements nearing expiry.  
+    **Frequency:** Daily  
+
+    ```php
+    Schedule::job(new SendAdvertExpiringNotification)
+            ->daily()
+            ->everySixHours();
+    ```
+
+- **Send Advert Deactivation Notification**  
+    Sends email notifications to the admin about advertisements that have been deactivated.  
+    **Frequency:** Daily  
+
+    ```php
+    Schedule::job(new SendAdvertDeactivationNotification)
+            ->daily()
+            ->everySixHours();
+    ```
+
+- run php artisan schedule:work
+
