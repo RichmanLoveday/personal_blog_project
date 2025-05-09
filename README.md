@@ -91,8 +91,24 @@ cd laravel-blog-platform
 
 ### 4. Run migration and seeders
 
-- php artisan migrate
-- php artisan db:seed
+- Run the migrations:
+    ```bash
+    php artisan migrate
+    ```
+
+- Seed the database:
+    ```bash
+    php artisan db:seed
+    ```
+
+### 5. Admin Credentials
+
+After running the seeders, you can log in as an admin using the following default credentials:
+
+- **Email:** `admin@test.com`
+- **Password:** `admin1234`
+
+Make sure to update the admin credentials after the first login for security purposes.
 
 
 ## 🧵 Queued Jobs (Email Notifications)
@@ -136,4 +152,3 @@ The following scheduled tasks are configured to handle advertisement notificatio
     ```
 
 - run php artisan schedule:work
-
